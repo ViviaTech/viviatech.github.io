@@ -122,19 +122,31 @@
 				let width, height;
 				const particles = [];
 				const colors = ["#0091ff", "#5d00ff", "#ff00e1"];
-				
-				const TRAIL_LENGTH = 400; 
+
+				// 1. DEVICE DETECTION
+				const isMobile = window.innerWidth < 768;
+
+				// 2. CONDITIONAL SETTINGS
+				const CONFIG = {
+					maxParticles: isMobile ? 12 : 20,
+					trailLength:  isMobile ? 60 : 400,
+					dprLimit:     isMobile ? 2  : 3,
+					radiusMin:    isMobile ? 4  : 8,
+					speed:        isMobile ? 1.5 : 2,
+					// Toggle the expensive fading loop
+					simpleDraw:   isMobile 
+				};
+
 				const AVOID_RADIUS_WIDTH = 0.35;  
 				const AVOID_RADIUS_HEIGHT = 0.50; 
 				const TURN_CHANCE = 0.007; 
 
 				function resizeCanvas() {
-					// Target the new wrapper instead of the canvas itself
 					const container = document.querySelector(".animation-zone");
-					const dpr = window.devicePixelRatio || 1;
+					const dpr = Math.min(window.devicePixelRatio || 1, CONFIG.dprLimit);
 					
 					width = container.offsetWidth;
-					height = container.offsetHeight; // This is now the total height of 3 sections
+					height = container.offsetHeight;
 					
 					canvas.width = width * dpr;
 					canvas.height = height * dpr;
@@ -151,10 +163,10 @@
 
 					init() {
 						this.isDead = false;
-						this.radius = 8 + Math.random() * 2;
+						this.radius = CONFIG.radiusMin + Math.random() * 2;
 						this.color = colors[Math.floor(Math.random() * colors.length)];
 						this.history = []; 
-						this.speed = 2;
+						this.speed = CONFIG.speed;
 						
 						const possibleAngles = [0, Math.PI/4, Math.PI/2, 3*Math.PI/4, Math.PI, 5*Math.PI/4, 3*Math.PI/2, 7*Math.PI/4];
 						this.angle = possibleAngles[Math.floor(Math.random() * possibleAngles.length)];
@@ -166,7 +178,6 @@
 							this.x = Math.random() * width;
 							this.y = Math.random() > 0.5 ? -10 : height + 10;
 						}
-						
 						this.updateVelocity();
 					}
 
@@ -192,9 +203,7 @@
 							this.y += this.vy;
 							this.history.push({ x: this.x, y: this.y });
 
-							if (Math.random() < TURN_CHANCE) {
-								this.changeDirection();
-							}
+							if (Math.random() < TURN_CHANCE) this.changeDirection();
 
 							const centerX = width / 2;
 							const centerY = height / 2;
@@ -206,14 +215,12 @@
 								this.changeDirection(true);
 							}
 
-							const margin = 10; 
-							if (this.x < -margin || this.x > width + margin || 
-								this.y < -margin || this.y > height + margin) {
+							if (this.x < -20 || this.x > width + 20 || this.y < -20 || this.y > height + 20) {
 								this.isDead = true; 
 							}
 						}
 
-						if (this.history.length > (this.isDead ? 0 : TRAIL_LENGTH)) {
+						if (this.history.length > (this.isDead ? 0 : CONFIG.trailLength)) {
 							this.history.shift();
 						}
 
@@ -228,6 +235,7 @@
 						ctx.globalCompositeOperation = "lighter";
 						ctx.lineCap = "round";
 						ctx.lineJoin = "round";
+						ctx.strokeStyle = this.color;
 
 						const path = new Path2D();
 						path.moveTo(this.history[0].x, this.history[0].y);
@@ -235,7 +243,7 @@
 							path.lineTo(this.history[i].x, this.history[i].y);
 						}
 
-						ctx.strokeStyle = this.color;
+						// SHARED GLOW EFFECT
 						ctx.lineWidth = this.radius * 6.5;
 						ctx.globalAlpha = 0.04;
 						ctx.stroke(path);
@@ -244,17 +252,26 @@
 						ctx.globalAlpha = 0.15;
 						ctx.stroke(path);
 
-						for (let i = 0; i < this.history.length - 1; i++) {
-							const alpha = i / this.history.length;
-							ctx.beginPath();
-							ctx.lineWidth = this.radius * 1.9;
-							ctx.strokeStyle = this.color;
-							ctx.globalAlpha = alpha * 0.4;
-							ctx.moveTo(this.history[i].x, this.history[i].y);
-							ctx.lineTo(this.history[i+1].x, this.history[i+1].y);
-							ctx.stroke();
+						// 3. VARIANT LOGIC: PC vs MOBILE
+						if (CONFIG.simpleDraw) {
+							// MOBILE: Draw the trail as a single solid low-alpha stroke (Ultra Fast)
+							ctx.lineWidth = this.radius * 1.5;
+							ctx.globalAlpha = 0.3;
+							ctx.stroke(path);
+						} else {
+							// PC: Draw the expensive fading gradient loop (Original Quality)
+							for (let i = 0; i < this.history.length - 1; i++) {
+								const alpha = i / this.history.length;
+								ctx.beginPath();
+								ctx.lineWidth = this.radius * 1.9;
+								ctx.globalAlpha = alpha * 0.4;
+								ctx.moveTo(this.history[i].x, this.history[i].y);
+								ctx.lineTo(this.history[i+1].x, this.history[i+1].y);
+								ctx.stroke();
+							}
 						}
 
+						// Head of the particle
 						ctx.beginPath();
 						ctx.globalAlpha = 1;
 						ctx.fillStyle = this.color;
@@ -264,7 +281,7 @@
 					}
 				}
 
-				for (let i = 0; i < 20; i++) {
+				for (let i = 0; i < CONFIG.maxParticles; i++) {
 					particles.push(new Particle());
 				}
 
