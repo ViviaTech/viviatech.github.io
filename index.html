@@ -1,27 +1,1197 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ViVia</title>
-    <style>
-        .center-bold {
-            display: flex;
-            justify-content: center;
-            align-items: center; /* Center items vertically */
-            font-weight: bold;
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ViVia Technologies</title>
+	<link rel="icon" href="media/ViVa-V-Logo.png" type="image/x-icon">
+
+
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
+
+			/* =========================
+			TEAM CAROUSEL LOGIC
+			========================= */
+			const members = document.querySelectorAll(".team-member");
+			const nextBtn = document.querySelector(".carousel-btn.next");
+			const prevBtn = document.querySelector(".carousel-btn.prev");
+
+			let currentIndex = 0;
+			let autoRotate;
+
+			function showMember(index) {
+				members.forEach((member, i) => {
+					member.classList.remove("active", "prev", "next");
+
+					if (i === index) {
+						member.classList.add("active");
+					} 
+					else if (i === (index - 1 + members.length) % members.length) {
+						member.classList.add("prev");
+					} 
+					else if (i === (index + 1) % members.length) {
+						member.classList.add("next");
+					}
+				});
+			}
+
+			function nextMember() {
+				currentIndex = (currentIndex + 1) % members.length;
+				showMember(currentIndex);
+			}
+
+			function prevMember() {
+				currentIndex = (currentIndex - 1 + members.length) % members.length;
+				showMember(currentIndex);
+			}
+
+			function startAutoRotate() {
+				autoRotate = setInterval(nextMember, 4500);
+			}
+
+			function stopAutoRotate() {
+				clearInterval(autoRotate);
+			}
+
+			if (nextBtn && prevBtn) {
+				nextBtn.addEventListener("click", () => {
+					stopAutoRotate();
+					nextMember();
+					startAutoRotate();
+				});
+
+				prevBtn.addEventListener("click", () => {
+					stopAutoRotate();
+					prevMember();
+					startAutoRotate();
+				});
+
+				showMember(currentIndex);
+				startAutoRotate();
+			}
+
+			/* =========================
+			SERVICES TAB LOGIC
+			========================= */
+			const serviceButtons = document.querySelectorAll(".service-btn");
+			const serviceContents = document.querySelectorAll(".service-content");
+
+			serviceButtons.forEach(button => {
+				button.addEventListener("click", (e) => {
+					// Prevent default behavior if any
+					e.preventDefault();
+
+					// Get the target ID from the data-target attribute
+					// (Make sure your HTML buttons have data-target="service-1" etc.)
+					const targetId = button.getAttribute("data-target") || 
+									button.getAttribute("onclick")?.match(/'([^']+)'/)?.[1];
+
+					// 1. Remove active class from all buttons and contents
+					serviceButtons.forEach(btn => btn.classList.remove("active"));
+					serviceContents.forEach(content => {
+						content.classList.remove("active");
+						// Force a small reset for the fade-in animation
+						content.style.display = "none"; 
+					});
+
+					// 2. Add active class to clicked button
+					button.classList.add("active");
+
+					// 3. Add active class to the target content div
+					const targetContent = document.getElementById(targetId);
+					if (targetContent) {
+						targetContent.style.display = ""; // Reset display to use CSS Grid/Flex
+						// Small timeout to trigger CSS animation smoothly
+						setTimeout(() => {
+							targetContent.classList.add("active");
+						}, 10);
+					}
+				});
+			});
+
+
+			/* =========================
+			CIRCUIT ANIMATION
+			========================= */
+			(() => {
+				const canvas = document.getElementById("circuit-canvas");
+				if (!canvas) return;
+				const ctx = canvas.getContext("2d");
+
+				let width, height;
+				const particles = [];
+				const colors = ["#0091ff", "#5d00ff", "#ff00e1"];
+				
+				const TRAIL_LENGTH = 400; 
+				const AVOID_RADIUS_WIDTH = 0.35;  
+				const AVOID_RADIUS_HEIGHT = 0.50; 
+				const TURN_CHANCE = 0.007; 
+
+				function resizeCanvas() {
+					// Target the new wrapper instead of the canvas itself
+					const container = document.querySelector(".animation-zone");
+					const dpr = window.devicePixelRatio || 1;
+					
+					width = container.offsetWidth;
+					height = container.offsetHeight; // This is now the total height of 3 sections
+					
+					canvas.width = width * dpr;
+					canvas.height = height * dpr;
+					ctx.scale(dpr, dpr);
+				}
+				
+				resizeCanvas();
+				window.addEventListener("resize", resizeCanvas);
+
+				class Particle {
+					constructor() {
+						this.init();
+					}
+
+					init() {
+						this.isDead = false;
+						this.radius = 8 + Math.random() * 2;
+						this.color = colors[Math.floor(Math.random() * colors.length)];
+						this.history = []; 
+						this.speed = 2;
+						
+						const possibleAngles = [0, Math.PI/4, Math.PI/2, 3*Math.PI/4, Math.PI, 5*Math.PI/4, 3*Math.PI/2, 7*Math.PI/4];
+						this.angle = possibleAngles[Math.floor(Math.random() * possibleAngles.length)];
+
+						if (Math.random() > 0.5) {
+							this.x = Math.random() > 0.5 ? -10 : width + 10;
+							this.y = Math.random() * height;
+						} else {
+							this.x = Math.random() * width;
+							this.y = Math.random() > 0.5 ? -10 : height + 10;
+						}
+						
+						this.updateVelocity();
+					}
+
+					updateVelocity() {
+						this.vx = Math.cos(this.angle) * this.speed;
+						this.vy = Math.sin(this.angle) * this.speed;
+					}
+
+					changeDirection(avoiding = false) {
+						if (avoiding) {
+							const angleToCenter = Math.atan2(height/2 - this.y, width/2 - this.x);
+							this.angle = Math.round((angleToCenter + Math.PI) / (Math.PI / 4)) * (Math.PI / 4);
+						} else {
+							const turns = [Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2];
+							this.angle += turns[Math.floor(Math.random() * turns.length)];
+						}
+						this.updateVelocity();
+					}
+
+					update() {
+						if (!this.isDead) {
+							this.x += this.vx;
+							this.y += this.vy;
+							this.history.push({ x: this.x, y: this.y });
+
+							if (Math.random() < TURN_CHANCE) {
+								this.changeDirection();
+							}
+
+							const centerX = width / 2;
+							const centerY = height / 2;
+							const avoidW = width * AVOID_RADIUS_WIDTH;
+							const avoidH = height * AVOID_RADIUS_HEIGHT;
+
+							if (this.x > centerX - avoidW && this.x < centerX + avoidW &&
+								this.y > centerY - avoidH && this.y < centerY + avoidH) {
+								this.changeDirection(true);
+							}
+
+							const margin = 10; 
+							if (this.x < -margin || this.x > width + margin || 
+								this.y < -margin || this.y > height + margin) {
+								this.isDead = true; 
+							}
+						}
+
+						if (this.history.length > (this.isDead ? 0 : TRAIL_LENGTH)) {
+							this.history.shift();
+						}
+
+						if (this.isDead && this.history.length === 0) {
+							this.init();
+						}
+					}
+
+					draw() {
+						if (this.history.length < 2) return;
+						ctx.save();
+						ctx.globalCompositeOperation = "lighter";
+						ctx.lineCap = "round";
+						ctx.lineJoin = "round";
+
+						const path = new Path2D();
+						path.moveTo(this.history[0].x, this.history[0].y);
+						for (let i = 1; i < this.history.length; i++) {
+							path.lineTo(this.history[i].x, this.history[i].y);
+						}
+
+						ctx.strokeStyle = this.color;
+						ctx.lineWidth = this.radius * 6.5;
+						ctx.globalAlpha = 0.04;
+						ctx.stroke(path);
+
+						ctx.lineWidth = this.radius * 3.5;
+						ctx.globalAlpha = 0.15;
+						ctx.stroke(path);
+
+						for (let i = 0; i < this.history.length - 1; i++) {
+							const alpha = i / this.history.length;
+							ctx.beginPath();
+							ctx.lineWidth = this.radius * 1.9;
+							ctx.strokeStyle = this.color;
+							ctx.globalAlpha = alpha * 0.4;
+							ctx.moveTo(this.history[i].x, this.history[i].y);
+							ctx.lineTo(this.history[i+1].x, this.history[i+1].y);
+							ctx.stroke();
+						}
+
+						ctx.beginPath();
+						ctx.globalAlpha = 1;
+						ctx.fillStyle = this.color;
+						ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+						ctx.fill();
+						ctx.restore();
+					}
+				}
+
+				for (let i = 0; i < 20; i++) {
+					particles.push(new Particle());
+				}
+
+				function animate() {
+					ctx.clearRect(0, 0, width, height);
+					for (let p of particles) {
+						p.update();
+						p.draw();
+					}
+					requestAnimationFrame(animate);
+				}
+				animate();
+			})();
+		});
+	</script>
+
+	<style>
+		/* =========================
+		GLOBAL / BASE
+		========================= */
+		html {
+			scroll-behavior: smooth;
+		}
+
+		body {
+			margin: 0;
+			font-family: "Segoe UI", Arial, sans-serif;
+			background: url("media/background.jpg") no-repeat center center fixed;
+			background-size: cover;
+			color: #ffffff;
+		}
+
+		/* =========================
+		HEADER
+		========================= */
+		#site-header {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 90px;
+			z-index: 1000;
+
+			background: linear-gradient(
+				135deg,
+				rgba(7, 19, 56, 0.85),
+				rgba(88, 5, 95, 0.85),
+				rgba(89, 0, 148, 0.85),
+				rgba(118, 20, 131, 0.85),
+				rgba(255, 7, 139, 0.85)
+			);
+			backdrop-filter: blur(10px);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+
+			display: flex;
+			justify-content: center;
+		}
+
+		.header-wrapper {
+			width: 100%;
+			max-width: 1400px;
+			display: flex;
+			align-items: center;
+			justify-content: space-evenly;
+			padding: 0 40px;
+		}
+
+		.header-logo {
+			position: fixed;
+			left: 5vw;
+			height: 55px;
+		}
+
+		/* =========================
+		NAVIGATION
+		========================= */
+		nav {
+			display: flex;
+			gap: 48px;
+		}
+
+		nav a {
+			color: #ffffff;
+			text-decoration: none;
+			font-size: 1.35rem;
+			font-weight: 450;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			position: relative;
+			transition: opacity 0.2s ease;
+		}
+
+		nav a::after {
+			content: "";
+			position: absolute;
+			left: 0;
+			bottom: -8px;
+			width: 0%;
+			height: 2px;
+			background: linear-gradient(90deg, #4cc9f0, #f72585);
+			transition: width 0.3s ease;
+		}
+
+		nav a:hover {
+			opacity: 0.85;
+			color: #4cc9f0;
+		}
+
+		nav a:hover::after {
+			width: 100%;
+			color: #ffffff;
+		}
+
+		/* =========================
+		HERO / HOME
+		========================= */
+		.hero {
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+			padding: 0 10%;
+			position: relative;
+		}
+
+		.hero::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background: rgba(0, 0, 0, 0.45);
+		}
+
+		.hero-content {
+			position: relative;
+			max-width: 800px;
+		}
+
+		.hero-mark {
+			width: clamp(360px, 22vw, 460px);
+			margin-bottom: 40px;
+			filter: drop-shadow(0 0 10px rgba(0, 174, 255, 0.8));
+			animation: pulse 1s infinite alternate;
+		}
+
+		@keyframes pulse {
+			from {
+				filter: drop-shadow(0 0 5px rgba(0, 174, 255, 0.8));
+			}
+			to {
+				filter: drop-shadow(0 0 10px rgba(0, 174, 255, 0.8));
+			}
+		}
+
+		.hero-title {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 16px;
+			margin-bottom: 28px;
+		}
+
+		.hero-title span {
+			font-size: clamp(2.2rem, 4vw, 3.2rem);
+			font-weight: 700;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			opacity: 0.9;
+		}
+
+		.hero-title img {
+			height: clamp(48px, 6vw, 72px);
+		}
+
+		.hero p {
+			font-size: 1.1rem;
+			line-height: 1.6;
+			color: #e5e7eb;
+			margin-bottom: 40px;
+		}
+
+		.hero a.button {
+			display: inline-block;
+			padding: 14px 36px;
+			border-radius: 40px;
+			background: linear-gradient(90deg, #4cc9f0, #f72585);
+			color: #ffffff;
+			text-decoration: none;
+			font-weight: 600;
+			letter-spacing: 1px;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.hero a.button:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+		}
+
+		/* =========================
+		SECTIONS
+		========================= */
+		section {
+			padding: 120px 10%;
+		}
+
+		section h2 {
+			font-size: 2.5rem;
+			margin-bottom: 20px;
+		}
+
+		section p {
+			max-width: 700px;
+			line-height: 1.7;
+			color: #d1d5db;
+		}
+
+		/* =========================
+		ABOUT SECTION
+		========================= */
+		.about-section {
+			padding: 100px 8%;
+			background: linear-gradient(
+				180deg,
+				rgba(0, 0, 0, 1) 0%,
+				rgba(8, 10, 18, 1) 2%,
+				rgba(15, 23, 42, 1) 85%,
+				rgba(8, 10, 18, 1) 100%
+			);
+			
+			position: relative;
+			overflow: hidden;
+			z-index: auto;
+		}
+
+		#circuit-canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			/* Change this to -1 to put it behind all content */
+			z-index: 5;
+		}
+
+		.animation-zone {
+			position: relative; /* Becomes the anchor for the canvas */
+			width: 100%;
+		}
+
+		.about-content {
+			max-width: 1500px;
+			margin: 0 auto;
+			text-align: center;
+			position: relative;
+			z-index: 2;
+		}
+
+		.about-text {
+			font-size: 1.35rem;
+			line-height: 1.8;
+			color: #e5e7eb;
+			max-width: 720px;
+			margin: 0 auto 50px;
+		}
+
+		/* =========================
+		TEAM SECTION
+		========================= */
+		.team-section h3 {
+			font-size: 3rem;
+			margin-bottom: 50px;
+			letter-spacing: 1px;
+		}
+
+		/* CAROUSEL */
+		.team-carousel {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 40px;
+			overflow: hidden;
+			padding-bottom: 40px;
+		}
+
+		/* TRACK */
+		.carousel-track {
+			position: relative;
+			width: 860px;
+			height: 720px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: visible;
+		}
+
+		/* TEAM CARD */
+		.team-member {
+			position: absolute;
+			width: 760px;
+			max-width: 90vw;
+
+			background: rgba(34, 34, 34, 0.925);
+			border-radius: 24px;
+			overflow: hidden;
+			padding: 60px 40px;
+
+			box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+			text-align: center;
+
+			opacity: 0;
+			transform: scale(0.8);
+			transition: transform 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
+			pointer-events: none;
+		}
+
+		/* ACTIVE (CENTER) */
+		.team-member.active {
+			opacity: 1;
+			transform: translateX(0) scale(1);
+			z-index: 3;
+			pointer-events: auto;
+			filter: blur(0);
+			overflow: hidden;
+			border-radius: 24px;
+		}
+
+		/* PREVIOUS (LEFT GHOST) */
+		.team-member.prev {
+			opacity: 0.35;
+			transform: translateX(-380px) scale(0.85);
+			z-index: 2;
+			filter: blur(1px);
+		}
+
+		/* NEXT (RIGHT GHOST) */
+		.team-member.next {
+			opacity: 0.35;
+			transform: translateX(380px) scale(0.85);
+			z-index: 2;
+			filter: blur(1px);
+		}
+
+		/* TEAM MEMBER CONTENT */
+		.team-member img {
+			width: 300px;
+			height: 300px;
+			object-fit: cover;
+			border-radius: 50%;
+			margin-bottom: 28px;
+
+			border: 5px solid transparent;
+			background:
+				linear-gradient(#000, #000) padding-box,
+				linear-gradient(90deg, #4cc9f0, #f72585) border-box;
+
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+		}
+
+		.team-member h3,
+		.team-member h4 {
+			font-size: 2.2rem;
+			margin-bottom: 10px;
+		}
+
+		.team-member span {
+			display: block;
+			font-size: 1.05rem;
+			color: #a5b4fc;
+			margin-bottom: 18px;
+			letter-spacing: 0.6px;
+		}
+
+		.team-member p {
+			max-width: 620px;
+			margin: 0 auto;
+			font-size: 1.05rem;
+			line-height: 1.65;
+			color: #d1d5db;
+		}
+
+		/* CAROUSEL BUTTONS */
+		.carousel-btn {
+			background: none;
+			border: none;
+			font-size: 3rem;
+			color: #ffffff;
+			cursor: pointer;
+			opacity: 0.6;
+			transition: opacity 0.2s ease, transform 0.2s ease;
+			z-index: 4;
+		}
+
+		.carousel-btn:hover {
+			opacity: 1;
+			transform: scale(1.1);
+		}
+
+		/* =========================
+		REFINED HORIZONTAL SERVICES
+		========================= */
+		.services-section {
+		/* rgba(8, 10, 18, 0.9) is your original dark navy with 90% opacity */
+			background: rgba(8, 10, 18, 1); 
+			color: #ffffff;
+			padding: 120px 5%;
+			position: relative;
+			z-index: auto;
+		}
+
+		.services-container {
+			max-width: 1200px;
+			margin: 0 auto;
+		}
+
+        .services-section h2 {
             text-align: center;
-            font-size: 5em;
+            font-size: 3rem;
+            margin-bottom: 40px;
+            background: linear-gradient(to right, #ffffff, #64748b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-    </style>
+
+		/* Horizontal Tab Navigation */
+		.services-nav {
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+			margin-bottom: 40px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			padding-bottom: 20px;
+		}
+
+		.service-btn {
+			background: none;
+			border: none;
+			padding: 15px 30px;
+			font-size: 1.1rem;
+			font-weight: 500;
+			color: #94a3b8;
+			cursor: pointer;
+			position: relative;
+			transition: color 0.3s ease;
+		}
+
+		.service-btn:hover {
+			color: #ffffff;
+		}
+
+		/* The Animated Underline */
+		.service-btn::after {
+			content: '';
+			position: absolute;
+			bottom: -21px; /* Aligns with the nav border */
+			left: 0;
+			width: 0;
+			height: 3px;
+			background: linear-gradient(90deg, #4cc9f0, #f72585);
+			transition: width 0.3s ease;
+			box-shadow: 0 0 15px rgba(247, 37, 133, 0.6);
+		}
+
+		.service-btn.active {
+			color: #ffffff;
+		}
+
+		.service-btn.active::after {
+			width: 100%;
+		}
+
+		/* Content Card */
+		.services-display {
+			background: rgba(15, 23, 42, 0.6);
+			backdrop-filter: blur(12px);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			border-radius: 30px;
+			padding: 60px;
+			min-height: 450px;
+			box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+		}
+
+		.service-content {
+			display: none;
+			grid-template-columns: 1fr 1fr;
+			gap: 60px;
+			align-items: center;
+			animation: slideUp 0.5s ease-out;
+		}
+
+		.service-content.active {
+			opacity: 1;
+			display: grid;
+		}
+
+		@keyframes slideUp {
+			from { opacity: 0; transform: translateY(20px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+		/* Info & Media Styles */
+		.service-info h3 {
+			font-size: 2.5rem;
+			margin-bottom: 20px;
+		}
+
+		.service-info p {
+			color: #cbd5e1;
+			font-size: 1.1rem;
+			line-height: 1.8;
+		}
+
+		.service-media {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 15px;
+		}
+
+		.img-placeholder {
+			background: rgba(255, 255, 255, 0.03);
+			border: 1px dashed rgba(255, 255, 255, 0.2);
+			border-radius: 15px;
+			aspect-ratio: 1/1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #475569;
+			font-size: 0.8rem;
+			text-align: center;
+			padding: 10px;
+		}
+
+		/* Mobile Adjustments */
+		@media (max-width: 768px) {
+			.services-nav {
+				flex-wrap: wrap;
+				gap: 5px;
+			}
+			.service-btn {
+				padding: 10px 15px;
+				font-size: 0.9rem;
+			}
+			.services-display {
+				padding: 30px;
+			}
+			.service-content.active {
+				grid-template-columns: 1fr;
+			}
+			.about-content, .services-container {
+				background-color: rgba(8, 10, 18, 0.815);
+				backdrop-filter: blur(10px);
+			}
+			.about-section {
+				padding: 0px;
+			}
+		}
+
+
+		/* =========================
+		CONTACT SECTION (Enlarged)
+		========================= */
+		#contact {
+			/* Gradient goes from your dark navy to a clean, light grey-white */
+			background: linear-gradient(
+				180deg, 
+				rgba(8, 10, 18, 1) 0%, 
+				rgba(40, 55, 70, 1) 100%
+			);
+			z-index: auto;
+			min-height: 60vh; /* Increased to 100vh to make the gradient transition feel more natural */
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 100px 10%; /* Increased top padding so the text doesn't hit the dark top immediately */
+			position: relative;
+		}
+
+		.contact-container {
+			width: 100%;
+			max-width: 1500px; /* Wider container */
+			background: rgba(8, 10, 18, 0.85);
+			border: 1px solid rgba(255, 255, 255, 0.05);
+			backdrop-filter: blur(15px);
+			padding: 120px 60px; /* Much more internal breathing room */
+			border-radius: 50px;
+			text-align: center;
+			box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+			z-index: 1;
+		}
+
+		.contact-container h2 {
+			font-size: 6.5rem;
+			margin-bottom: 30px;
+			margin-top: 20px;
+			letter-spacing: -2px;
+			background: linear-gradient(
+				to right, 
+				#ffffff, 
+				#4cc9f0, 
+				#f72585, 
+				#4cc9f0, 
+				#ffffff
+			);
+			background-size: 200% auto;
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+			animation: flowGradient 4s linear infinite;
+		}
+
+		/* animation */
+		@keyframes flowGradient {
+			0% {
+				background-position: 0% center;
+			}
+			100% {
+				background-position: 200% center;
+			}
+		}
+		.contact-details {
+			margin-top: 60px;
+			display: grid;
+			grid-template-columns: 1fr 1fr; /* Side by side contact info */
+			gap: 40px;
+		}
+
+		.contact-item {
+			font-size: 2.1rem; /* Larger text */
+			font-weight: 300;
+			color: #ffffff;
+			text-decoration: none;
+			transition: all 0.4s ease;
+		}
+
+		.contact-item:hover {
+			color: #4cc9f0;
+			letter-spacing: 1px;
+		}
+
+		.contact-label {
+			display: block;
+			font-size: 0.8rem;
+			text-transform: uppercase;
+			letter-spacing: 3px;
+			color: #64748b;
+			margin-bottom: 15px;
+		}
+
+		/* =========================
+		FOOTER (Anchored at Bottom)
+		========================= */
+		footer {
+			background: #030406;
+			padding: 60px 10%;
+			border-top: 1px solid rgba(255, 255, 255, 0.05);
+		}
+
+		.footer-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 40px;
+		}
+
+		.social-links {
+			display: flex;
+			gap: 40px;
+		}
+
+		.social-icon {
+			color: #94a3b8;
+			font-size: 1rem;
+			text-decoration: none;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			font-weight: 600;
+			transition: all 0.3s ease;
+			padding: 10px;
+		}
+
+		.social-icon:hover {
+			color: #f72585;
+			transform: translateY(-5px);
+		}
+
+		.footer-bottom {
+			width: 100%;
+			padding-top: 40px;
+			border-top: 1px solid rgba(255, 255, 255, 0.03);
+			display: flex;
+			justify-content: space-between; /* Space out copyright and tagline */
+			align-items: center;
+			color: #475569;
+			font-size: 0.8rem;
+		}
+
+		/* Responsive Adjustments */
+		@media (max-width: 768px) {
+			.contact-container h2 { font-size: 4rem; }
+			.contact-details { grid-template-columns: 1fr; }
+			.footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+			.about-section {background-color: rgba(8, 10, 18, 0.815);}
+		}
+
+		.header-wrapper,
+		.about-content,
+		.team-section,
+		.services-container,
+		.contact-container {
+			position: relative; /* z-index only works if position is relative/absolute */
+			z-index: 10;        /* Higher than the canvas */
+		}
+	</style>
 </head>
 
 <body>
-    <div class="center-bold">
-        Contact Information: +351 928 214 629
-    </div>
-    <hr>
-</body>
 
+	<header id="site-header">
+		<div class="header-wrapper">
+			<img src="media/ViVa-V-Logo.png" alt="ViVia Technologies Logo" class="header-logo">
+
+			<nav>
+				<a href="#home">Home</a>
+				<a href="#about">About</a>
+				<a href="#services">Services</a>
+				<a href="#contact">Contact</a>
+			</nav>
+		</div>
+	</header>
+
+	<main>
+
+		<!-- HOME / HERO -->
+		<section id="home" class="hero">
+			<div class="hero-content">
+				<img src="media/ViVa-Logo.png" alt="ViVia Technologies Logo" class="hero-mark">
+
+				<div class="hero-title">
+					<span>This is</span>
+					<img src="media/ViVa-Roman-Logo.png" alt="ViVia" style="filter: drop-shadow(0 0 20px rgba(225, 0, 255, 0.8));">
+				</div>
+
+				<p>
+					We team up with forward-thinking brands to design memorable web
+					experiences, optimize digital products and much more!
+				</p>
+
+				<a href="#about" class="button">Learn More</a>
+			</div>
+		</section>
+
+		<div class="animation-zone">
+			<canvas id="circuit-canvas"></canvas>
+
+			<!-- ABOUT -->
+			<section id="about" class="about-section">
+				<div class="about-content">
+					<h2>About Us</h2>
+
+					<p class="about-text">
+						ViVia Technologies is a digital-first studio focused on crafting modern,
+						impactful online experiences. We blend design, technology, and strategy
+						to help forward-thinking brands stand out in a rapidly evolving digital
+						landscape. Every project we take on is driven by clarity, creativity,
+						and measurable results.
+					</p>
+
+					<!-- Team Carousel -->
+					<div class="team-section">
+						<h3>Meet the Team</h3>
+
+						<div class="team-carousel">
+							<button class="carousel-btn prev">‹</button>
+
+							<div class="carousel-track">
+								<div class="team-member active">
+									<img src="media/human1.jpg" alt="Rodrigo Monteiro">
+									<h4>Rodrigo Monteiro</h4>
+									<span>CEO · Founder</span>
+									<p>
+										Game-focused developer aiming for RNCP level 7. Passionate about immersive
+										world-building through code and design.
+									</p>
+								</div>
+
+								<div class="team-member">
+									<img src="media/human2.jpg" alt="Miguel Paulino">
+									<h4>Miguel Paulino</h4>
+									<span>Co-Founder · Lead Engineer</span>
+									<p>
+										A hands-on problem solver who thrives on challenges, balancing clean
+										engineering with creativity.
+									</p>
+								</div>
+
+								<div class="team-member">
+									<img src="media/human3.jpg" alt="Samir Mercado">
+									<h4>Samir Mercado</h4>
+									<span>Co-Founder · Lead Engineer</span>
+									<p>
+										Software engineering student and VFX editor focused on performance,
+										polish, and fast iteration.
+									</p>
+								</div>
+
+								<div class="team-member">
+									<img src="media/human4.jpg" alt="Rafael Abreu">
+									<h4>Rafael Abreu</h4>
+									<span>Co-Founder · UX/UI Designer</span>
+									<p>
+										Digital artist bringing life and emotion to interactive experiences
+										through thoughtful design.
+									</p>
+								</div>
+							</div>
+
+							<button class="carousel-btn next">›</button>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- SERVICES -->
+			<section id="services" class="services-section">
+				<div class="services-container">
+					<h2>Our Services</h2>
+					
+					<div class="services-wrapper">
+						<div class="services-nav">
+							<button class="service-btn active" data-target="service-1">Web Experience</button>
+							<button class="service-btn" data-target="service-2">Product Optimization</button>
+							<button class="service-btn" data-target="service-3">Interactive Branding</button>
+						</div>
+
+						<div class="services-display">
+							<div id="service-1" class="service-content active">
+								<div class="service-info">
+									<h3>Web Experience Design</h3>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+									<br>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+									<br>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+									<br>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+									<br>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+								</div>
+								<div class="service-media">
+									<div class="img-placeholder">UI Animation Preview</div>
+									<div class="img-placeholder">Responsive Layout</div>
+								</div>
+							</div>
+						<div id="service-2" class="service-content active" style="display: none;">
+								<div class="service-info">
+									<h3>Product Optimization</h3>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+									<br>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+									<br>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+									<br>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+									<br>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+								</div>
+								<div class="service-media">
+									<div class="img-placeholder">UI Animation Preview</div>
+									<div class="img-placeholder">Responsive Layout</div>
+								</div>
+							</div>
+						<div id="service-3" class="service-content active" style="display: none;">
+								<div class="service-info">
+									<h3>Interactive Branding</h3>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+									<br>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+									<br>
+									<p>We create immersive digital journeys that captivate users from the first click. Using modern frameworks and cutting-edge UI/UX principles, your brand becomes an experience, not just a website.</p>
+								</div>
+								<div class="service-media">
+									<div class="img-placeholder">UI Animation Preview</div>
+									<div class="img-placeholder">Responsive Layout</div>
+								</div>
+							</div>
+							</div>
+					</div>
+				</div>
+			</section>
+			<!-- CONTACT -->
+			<section id="contact">
+				<div class="contact-container">
+					<h2>Ready to start?</h2>
+					<p style="color: #94a3b8; font-size: 1.8rem; max-width: 600px; margin: 0 auto 40px;">
+						Whether you have a specific project in mind or just want to explore the possibilities, we're here to help.
+					</p>
+
+					<div class="contact-details">
+						<div class="contact-box">
+							<span class="contact-label">Send an Email</span>
+							<a href="mailto:hello@vivia.tech" class="contact-item">viviatechnologies@gmail.com</a>
+						</div>
+						<div class="contact-box">
+							<span class="contact-label">Give us a call</span>
+							<a href="tel:+1234567890" class="contact-item">+351 928 214 629</a>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+		<footer>
+			<div class="footer-content">
+				<div class="social-links">
+					<a href="#" class="social-icon">Instagram</a>
+					<a href="#" class="social-icon">X</a>
+					<a href="#" class="social-icon">Facebook</a>
+				</div>
+
+				<div class="footer-bottom">
+					<p>© 2026 ViVia Technologies. All rights reserved.</p>
+					<p>Crafting digital excellence from Lisbon.</p>
+				</div>
+			</div>
+		</footer>
+
+</body>
 </html>
