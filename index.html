@@ -837,6 +837,9 @@
 			.about-section {
 				padding: 0px;
 			}
+			.service-btn::after {
+				bottom: -12px; /* Aligns with the nav border */
+			}
 		}
 
 
@@ -916,6 +919,13 @@
 			transition: all 0.4s ease;
 		}
 
+		.contact-text {
+			color: #94a3b8; 
+			font-size: 1.8rem; 
+			max-width: 600px; 
+			margin: 0 auto 40px;
+		}
+
 		.contact-item:hover {
 			color: #4cc9f0;
 			letter-spacing: 1px;
@@ -982,7 +992,7 @@
 
 		/* Responsive Adjustments */
 		@media (max-width: 768px) {
-			.contact-container h2 { font-size: 4rem; }
+			.contact-container h2 { font-size: 3rem; }
 			.contact-details { grid-template-columns: 1fr; }
 			.footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
 			.about-section {background-color: rgba(8, 10, 18, 0.815);}
@@ -999,6 +1009,9 @@
 			}
 			.header-wrapper {
 				padding: 0 10px;
+			}
+			.contact-text {
+				font-size: 1.2rem;
 			}
 		}
 
@@ -1191,7 +1204,7 @@
 			<section id="contact">
 				<div class="contact-container">
 					<h2>Ready to start?</h2>
-					<p style="color: #94a3b8; font-size: 1.8rem; max-width: 600px; margin: 0 auto 40px;">
+					<p class="contact-text">
 						Whether you have a specific project in mind or just want to explore the possibilities, we're here to help.
 					</p>
 
