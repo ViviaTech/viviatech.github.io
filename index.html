@@ -9,6 +9,7 @@
 
 	<script>
 		document.addEventListener("DOMContentLoaded", () => {
+			const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 			/* =========================
 			TEAM CAROUSEL LOGIC
@@ -68,7 +69,7 @@
 				});
 
 				showMember(currentIndex);
-				startAutoRotate();
+				if (!prefersReducedMotion) startAutoRotate();
 			}
 
 			/* =========================
@@ -150,6 +151,7 @@
 					
 					canvas.width = width * dpr;
 					canvas.height = height * dpr;
+					ctx.setTransform(1, 0, 0, 1, 0, 0);
 					ctx.scale(dpr, dpr);
 				}
 				
@@ -293,7 +295,7 @@
 					}
 					requestAnimationFrame(animate);
 				}
-				animate();
+				if (!prefersReducedMotion) animate();
 			})();
 		});
 	</script>
@@ -812,6 +814,8 @@
 			background: linear-gradient(180deg, rgba(8, 10, 18, 1), rgba(20, 30, 48, 1));
 			color: #ffffff;
 			padding: 100px 5%;
+			position: relative;
+			z-index: 10;
 		}
 
 		.newsletter-container {
@@ -856,6 +860,23 @@
 			border-radius: 18px;
 			background: rgba(15, 23, 42, 0.7);
 			box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+			position: relative;
+			overflow: hidden;
+			transition: transform 0.25s ease, border-color 0.25s ease;
+		}
+
+		.newsletter-card::before {
+			content: "";
+			position: absolute;
+			inset: 0 0 auto;
+			height: 3px;
+			background: linear-gradient(90deg, #4cc9f0, #f72585);
+			opacity: 0.85;
+		}
+
+		.newsletter-card:hover {
+			transform: translateY(-5px);
+			border-color: rgba(76, 201, 240, 0.45);
 		}
 
 		.newsletter-card span {
@@ -894,17 +915,21 @@
 		}
 
 		.img-placeholder {
-			background: rgba(255, 255, 255, 0.03);
-			border: 1px dashed rgba(255, 255, 255, 0.2);
+			background: linear-gradient(145deg, rgba(76, 201, 240, 0.12), rgba(247, 37, 133, 0.08));
+			border: 1px solid rgba(76, 201, 240, 0.24);
 			border-radius: 15px;
 			aspect-ratio: 1/1;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: #475569;
+			color: #cbd5e1;
 			font-size: 0.8rem;
+			font-weight: 600;
+			letter-spacing: 1px;
 			text-align: center;
+			text-transform: uppercase;
 			padding: 10px;
+			box-shadow: inset 0 0 45px rgba(76, 201, 240, 0.08);
 		}
 
 		/* Mobile Adjustments */
@@ -987,10 +1012,10 @@
 		}
 
 		.contact-container h2 {
-			font-size: 6.5rem;
+			font-size: clamp(3.5rem, 8vw, 6.5rem);
 			margin-bottom: 30px;
 			margin-top: 20px;
-			letter-spacing: -2px;
+			letter-spacing: 0;
 			background: linear-gradient(
 				to right, 
 				#ffffff, 
@@ -1072,6 +1097,8 @@
 		.social-links {
 			display: flex;
 			gap: 40px;
+			flex-wrap: wrap;
+			justify-content: center;
 		}
 
 		.social-icon {
@@ -1099,6 +1126,15 @@
 			align-items: center;
 			color: #475569;
 			font-size: 0.8rem;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after {
+				animation-duration: 0.01ms !important;
+				animation-iteration-count: 1 !important;
+				scroll-behavior: auto !important;
+				transition-duration: 0.01ms !important;
+			}
 		}
 
 		/* Responsive Adjustments */
@@ -1206,7 +1242,7 @@
 						<h3>Meet the Team</h3>
 
 						<div class="team-carousel">
-							<button class="carousel-btn prev">‹</button>
+							<button class="carousel-btn prev" aria-label="Previous team member">‹</button>
 
 							<div class="carousel-track">
 								<div class="team-member active">
@@ -1250,7 +1286,7 @@
 								</div>
 							</div>
 
-							<button class="carousel-btn next">›</button>
+							<button class="carousel-btn next" aria-label="Next team member">›</button>
 						</div>
 					</div>
 				</div>
@@ -1335,11 +1371,11 @@
 					<div class="contact-details">
 						<div class="contact-box">
 							<span class="contact-label">Send an Email</span>
-							<a href="mailto:hello@vivia.tech" class="contact-item">viviatechnologies@gmail.com</a>
+							<a href="mailto:viviatechnologies@gmail.com" class="contact-item">viviatechnologies@gmail.com</a>
 						</div>
 						<div class="contact-box">
 							<span class="contact-label">Give us a call</span>
-							<a href="tel:+1234567890" class="contact-item">+351 928 214 629</a>
+							<a href="tel:+351928214629" class="contact-item">+351 928 214 629</a>
 						</div>
 					</div>
 				</div>
@@ -1348,9 +1384,9 @@
 		<footer>
 			<div class="footer-content">
 				<div class="social-links">
-					<a href="#" class="social-icon">Instagram</a>
-					<a href="#" class="social-icon">X</a>
-					<a href="#" class="social-icon">Facebook</a>
+					<a href="#contact" class="social-icon">Contact</a>
+					<a href="mailto:viviatechnologies@gmail.com" class="social-icon">Email</a>
+					<a href="tel:+351928214629" class="social-icon">Call</a>
 				</div>
 
 				<div class="footer-bottom">
