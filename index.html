@@ -463,11 +463,6 @@
 			position: relative;
 			width: min(900px, 100%);
 			padding: 34px 30px 38px;
-			border: 1px solid rgba(255, 255, 255, 0.12);
-			border-radius: 28px 28px 28px 6px;
-			background: linear-gradient(145deg, rgba(5, 9, 20, 0.34), rgba(5, 9, 20, 0.08));
-			box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-			backdrop-filter: blur(3px);
 		}
 
 		.hero-kicker {
@@ -1542,22 +1537,32 @@
 		}
 
 		.contact-container {
-			width: 100%;
-			max-width: 1500px; /* Wider container */
-			background: linear-gradient(145deg, #111d31 0%, #0b1322 100%);
-			border: 1px solid rgba(139, 232, 255, 0.22);
-			padding: 110px 60px;
-			border-radius: 28px 28px 28px 6px;
-			text-align: center;
-			box-shadow: 0 40px 100px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+			width: min(1260px, 100%);
+			padding: 72px 0 28px;
+			border-top: 1px solid rgba(139, 232, 255, 0.28);
+			border-bottom: 1px solid rgba(247, 37, 133, 0.24);
 			position: relative;
 			z-index: 3;
 		}
 
+		.contact-heading {
+			max-width: 850px;
+			margin-bottom: 58px;
+		}
+
+		.contact-kicker {
+			margin: 0 0 20px;
+			color: #8be8ff;
+			font-size: 0.76rem;
+			font-weight: 700;
+			letter-spacing: 3px;
+			text-transform: uppercase;
+		}
+
 		.contact-container h2 {
-			font-size: clamp(3.5rem, 8vw, 6.5rem);
-			margin-bottom: 30px;
-			margin-top: 20px;
+			margin: 0 0 24px;
+			font-size: clamp(3.4rem, 8vw, 7.5rem);
+			line-height: 0.9;
 			letter-spacing: 0;
 			background: linear-gradient(
 				to right, 
@@ -1574,6 +1579,11 @@
 			animation: flowGradient 4s linear infinite;
 		}
 
+		.contact-container h2 em {
+			font-style: normal;
+			white-space: nowrap;
+		}
+
 		/* animation */
 		@keyframes flowGradient {
 			0% {
@@ -1584,25 +1594,61 @@
 			}
 		}
 		.contact-details {
-			margin-top: 60px;
+			margin-top: 0;
 			display: grid;
 			grid-template-columns: 1fr 1fr; /* Side by side contact info */
-			gap: 40px;
+			gap: 14px;
+		}
+
+		.contact-box {
+			min-height: 150px;
+			padding: 26px 28px;
+			border: 1px solid rgba(139, 232, 255, 0.2);
+			border-radius: 4px;
+			background: rgba(9, 14, 29, 0.68);
+			text-align: left;
+			transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+		}
+
+		.contact-box:hover {
+			transform: translateY(-4px);
+			border-color: rgba(76, 201, 240, 0.7);
+			background: rgba(15, 28, 52, 0.84);
 		}
 
 		.contact-item {
-			font-size: 2.1rem; /* Larger text */
+			display: inline-block;
+			font-size: clamp(1.15rem, 2.4vw, 2.1rem);
 			font-weight: 300;
+			line-height: 1.2;
 			color: #ffffff;
 			text-decoration: none;
 			transition: all 0.4s ease;
 		}
 
 		.contact-text {
-			color: #94a3b8; 
-			font-size: 1.8rem; 
-			max-width: 600px; 
-			margin: 0 auto 40px;
+			color: #c1cedd;
+			font-size: 1.2rem;
+			line-height: 1.8;
+			max-width: 650px;
+			margin: 0;
+		}
+
+		.contact-signoff {
+			display: flex;
+			justify-content: space-between;
+			gap: 24px;
+			margin-top: 30px;
+			padding-top: 18px;
+			color: #718198;
+			font-size: 0.75rem;
+			letter-spacing: 1.5px;
+			text-transform: uppercase;
+		}
+
+		.contact-signoff a {
+			color: #8be8ff;
+			text-decoration: none;
 		}
 
 		.contact-item:hover {
@@ -1699,6 +1745,11 @@
 			}
 			.contact-container {
 				padding: 60px 30px; /* Adjusted for smaller screens */
+			}
+			.contact-signoff {
+				align-items: flex-start;
+				flex-direction: column;
+				gap: 10px;
 			}
 			body {
 					background-attachment: fixed;
@@ -1941,20 +1992,28 @@
 				<canvas class="circuit-canvas" id="contact-circuit-canvas"></canvas>
 			<section id="contact">
 				<div class="contact-container">
-					<h2>Ready to start?</h2>
-					<p class="contact-text">
-						Whether you have a specific project in mind or just want to explore the possibilities, we're here to help.
-					</p>
+					<div class="contact-heading">
+						<p class="contact-kicker">Start a conversation</p>
+						<h2>Let's make something <em>worth using.</em></h2>
+						<p class="contact-text">
+							Have a project, a rough idea, or a problem worth untangling? Bring it to us.
+						</p>
+					</div>
 
 					<div class="contact-details">
 						<div class="contact-box">
-							<span class="contact-label">Send an Email</span>
+							<span class="contact-label">01 / Send an email</span>
 							<a href="mailto:viviatechnologies@gmail.com" class="contact-item">viviatechnologies@gmail.com</a>
 						</div>
 						<div class="contact-box">
-							<span class="contact-label">Give us a call</span>
+							<span class="contact-label">02 / Give us a call</span>
 							<a href="tel:+351928214629" class="contact-item">+351 928 214 629</a>
 						</div>
+					</div>
+
+					<div class="contact-signoff">
+						<span>ViVia Technologies / Lisbon</span>
+						<a href="mailto:viviatechnologies@gmail.com">viviatechnologies@gmail.com ↗</a>
 					</div>
 				</div>
 			</section>
