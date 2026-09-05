@@ -510,7 +510,7 @@
 				linear-gradient(180deg, #080a12 0%, #101827 52%, #0a0e18 100%);
 			position: relative;
 			overflow: hidden;
-			z-index: 1;
+			z-index: auto;
 		}
 
 		#circuit-canvas {
@@ -533,7 +533,7 @@
 			max-width: 1240px;
 			margin: 0 auto;
 			position: relative;
-			z-index: 1;
+			z-index: 3;
 		}
 
 		.about-intro {
@@ -792,23 +792,27 @@
 		========================= */
 		.services-section {
 			background:
-				linear-gradient(135deg, rgba(8, 10, 18, 0.96) 0%, rgba(16, 28, 48, 0.9) 52%, rgba(11, 14, 25, 0.96) 100%);
+			linear-gradient(135deg, #080c16 0%, #111d32 52%, #0b101d 100%);
 			color: #ffffff;
 			padding: 120px 5%;
 			position: relative;
-			z-index: 1;
+			z-index: auto;
+			border-top: 1px solid rgba(130, 215, 255, 0.12);
+			border-bottom: 1px solid rgba(130, 215, 255, 0.12);
 		}
 
 		.services-container {
 			max-width: 1200px;
 			margin: 0 auto;
+			position: relative;
+			z-index: 3;
 		}
 
         .services-section h2 {
             text-align: center;
             font-size: 3rem;
             margin-bottom: 40px;
-            background: linear-gradient(to right, #ffffff, #64748b);
+			background: linear-gradient(to right, #ffffff, #8be8ff);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -863,13 +867,12 @@
 
 		/* Content Card */
 		.services-display {
-			background: rgba(15, 23, 42, 0.6);
-			backdrop-filter: blur(12px);
-			border: 1px solid rgba(255, 255, 255, 0.08);
-			border-radius: 30px;
+			background: #101a2c;
+			border: 1px solid rgba(139, 232, 255, 0.16);
+			border-radius: 24px 24px 24px 6px;
 			padding: 60px;
 			min-height: 450px;
-			box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+			box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 		}
 
 		.service-content {
@@ -917,11 +920,12 @@
 		}
 
 		.newsletter-section {
-			background: linear-gradient(180deg, rgba(8, 10, 18, 0.82), rgba(20, 30, 48, 0.78));
+			background: linear-gradient(180deg, #0b101b 0%, #17243a 100%);
 			color: #ffffff;
 			padding: 100px 5%;
 			position: relative;
 			z-index: auto;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 		}
 
 		.newsletter-container {
@@ -964,9 +968,9 @@
 		.newsletter-card {
 			min-height: 190px;
 			padding: 28px;
-			border: 1px solid rgba(255, 255, 255, 0.1);
+			border: 1px solid rgba(139, 232, 255, 0.16);
 			border-radius: 18px;
-			background: rgba(15, 23, 42, 0.7);
+			background: #101a2c;
 			box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
 			position: relative;
 			overflow: hidden;
@@ -1064,8 +1068,8 @@
 				grid-template-columns: 1fr;
 			}
 			.services-container {
-				background-color: rgba(8, 10, 18, 0.815);
-				backdrop-filter: blur(10px);
+				background-color: transparent;
+				backdrop-filter: none;
 			}
 			.about-section {
 				padding: 90px 6% 80px;
