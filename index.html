@@ -9,6 +9,33 @@
 
 	<script>
 		document.addEventListener("DOMContentLoaded", () => {
+			const navLinks = [...document.querySelectorAll("nav a[href^='#']")];
+			const navSections = navLinks
+				.map(link => document.querySelector(link.getAttribute("href")))
+				.filter(Boolean);
+
+			function setActiveNav(sectionId) {
+				navLinks.forEach(link => {
+					const isActive = link.getAttribute("href") === `#${sectionId}`;
+					link.classList.toggle("is-active", isActive);
+					if (isActive) link.setAttribute("aria-current", "page");
+					else link.removeAttribute("aria-current");
+				});
+			}
+
+			const navObserver = new IntersectionObserver(entries => {
+				const visibleSections = entries
+					.filter(entry => entry.isIntersecting)
+					.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+				if (visibleSections[0]) setActiveNav(visibleSections[0].target.id);
+			}, {
+				rootMargin: "-35% 0px -55% 0px",
+				threshold: [0, 0.1, 0.25, 0.5, 1]
+			});
+
+			navSections.forEach(section => navObserver.observe(section));
+			setActiveNav("home");
+
 			/* =========================
 			TEAM CAROUSEL LOGIC
 			========================= */
@@ -404,7 +431,7 @@
 			box-shadow: inset 0 0 0 1px rgba(76, 201, 240, 0.22);
 		}
 
-		nav a[href="#home"] {
+		nav a.is-active {
 			color: #ffffff;
 			background: linear-gradient(90deg, rgba(76, 201, 240, 0.2), rgba(247, 37, 133, 0.18));
 			box-shadow: inset 0 0 0 1px rgba(139, 232, 255, 0.2);
