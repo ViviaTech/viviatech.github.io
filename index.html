@@ -9,8 +9,6 @@
 
 	<script>
 		document.addEventListener("DOMContentLoaded", () => {
-			const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 			/* =========================
 			TEAM CAROUSEL LOGIC
 			========================= */
@@ -69,7 +67,7 @@
 				});
 
 				showMember(currentIndex);
-				if (!prefersReducedMotion) startAutoRotate();
+				startAutoRotate();
 			}
 
 			/* =========================
@@ -1588,15 +1586,6 @@
 			align-items: center;
 			color: #475569;
 			font-size: 0.8rem;
-		}
-
-		@media (prefers-reduced-motion: reduce) {
-			*, *::before, *::after {
-				animation-duration: 0.01ms !important;
-				animation-iteration-count: 1 !important;
-				scroll-behavior: auto !important;
-				transition-duration: 0.01ms !important;
-			}
 		}
 
 		/* Responsive Adjustments */
