@@ -113,8 +113,8 @@
 			/* =========================
 			CIRCUIT ANIMATION
 			========================= */
-			(() => {
-				const canvas = document.getElementById("circuit-canvas");
+			function initializeCircuitAnimation(canvasId, containerSelector) {
+				const canvas = document.getElementById(canvasId);
 				if (!canvas) return;
 				const ctx = canvas.getContext("2d");
 
@@ -141,7 +141,7 @@
 				const TURN_CHANCE = 0.007; 
 
 				function resizeCanvas() {
-					const container = document.querySelector(".animation-zone");
+					const container = document.querySelector(containerSelector);
 					const dpr = Math.min(window.devicePixelRatio || 1, CONFIG.dprLimit);
 					
 					width = container.offsetWidth;
@@ -294,7 +294,10 @@
 					requestAnimationFrame(animate);
 				}
 				animate();
-			})();
+			}
+
+			initializeCircuitAnimation("about-circuit-canvas", ".about-animation-zone");
+			initializeCircuitAnimation("contact-circuit-canvas", ".contact-animation-zone");
 		});
 	</script>
 
@@ -511,7 +514,7 @@
 			z-index: auto;
 		}
 
-		#circuit-canvas {
+		.circuit-canvas {
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -1042,10 +1045,8 @@
 		========================= */
 		.services-section {
 			padding: 155px 5% 135px;
-			background: linear-gradient(135deg, #080d18 0%, #101d33 52%, #0a101d 100%);
+			background: transparent;
 			border: 0;
-			position: relative;
-			z-index: 3;
 		}
 
 		.services-container {
@@ -1208,10 +1209,8 @@
 
 		.newsletter-section {
 			padding: 125px 5% 145px;
-			background: linear-gradient(180deg, #0a101c 0%, #15243b 100%);
+			background: transparent;
 			border: 0;
-			position: relative;
-			z-index: 3;
 		}
 
 		.newsletter-container {
@@ -1446,12 +1445,7 @@
 		CONTACT SECTION (Enlarged)
 		========================= */
 		#contact {
-			background: linear-gradient(
-				180deg,
-				#0a101c 0%,
-				#101b2d 48%,
-				#0b111d 100%
-			);
+			background: transparent;
 			z-index: auto;
 			min-height: 60vh;
 			display: flex;
@@ -1676,8 +1670,8 @@
 			</div>
 		</section>
 
-		<div class="animation-zone">
-			<canvas id="circuit-canvas"></canvas>
+		<div class="animation-zone about-animation-zone">
+			<canvas class="circuit-canvas" id="about-circuit-canvas"></canvas>
 
 			<!-- ABOUT -->
 			<section id="about" class="about-section">
@@ -1771,6 +1765,7 @@
 					</div>
 				</div>
 			</section>
+		</div>
 
 			<!-- SERVICES -->
 			<section id="services" class="services-section">
@@ -1861,6 +1856,8 @@
 				</div>
 			</section>
 			<!-- CONTACT -->
+			<div class="animation-zone contact-animation-zone">
+				<canvas class="circuit-canvas" id="contact-circuit-canvas"></canvas>
 			<section id="contact">
 				<div class="contact-container">
 					<h2>Ready to start?</h2>
@@ -1880,7 +1877,7 @@
 					</div>
 				</div>
 			</section>
-		</div>
+			</div>
 		<footer>
 			<div class="footer-content">
 				<div class="social-links">
