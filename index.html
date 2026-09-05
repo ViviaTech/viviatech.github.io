@@ -23,18 +23,32 @@
 				});
 			}
 
-			const navObserver = new IntersectionObserver(entries => {
-				const visibleSections = entries
-					.filter(entry => entry.isIntersecting)
-					.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-				if (visibleSections[0]) setActiveNav(visibleSections[0].target.id);
-			}, {
-				rootMargin: "-35% 0px -55% 0px",
-				threshold: [0, 0.1, 0.25, 0.5, 1]
-			});
+			let navUpdateFrame;
 
-			navSections.forEach(section => navObserver.observe(section));
-			setActiveNav("home");
+			function updateActiveNav() {
+				const focusLine = window.innerHeight * 0.38;
+				const focusedSection = navSections.reduce((closest, section) => {
+					const bounds = section.getBoundingClientRect();
+					const distance = Math.abs(bounds.top - focusLine);
+					return !closest || distance < closest.distance
+						? { section, distance }
+						: closest;
+				}, null);
+
+				if (focusedSection) setActiveNav(focusedSection.section.id);
+			}
+
+			function scheduleNavUpdate() {
+				if (navUpdateFrame) return;
+				navUpdateFrame = requestAnimationFrame(() => {
+					navUpdateFrame = null;
+					updateActiveNav();
+				});
+			}
+
+			window.addEventListener("scroll", scheduleNavUpdate, { passive: true });
+			window.addEventListener("resize", scheduleNavUpdate);
+			updateActiveNav();
 
 			/* =========================
 			TEAM CAROUSEL LOGIC
@@ -1562,7 +1576,8 @@
 		.contact-container h2 {
 			margin: 0 0 24px;
 			font-size: clamp(3.4rem, 8vw, 7.5rem);
-			line-height: 0.9;
+			line-height: 1.02;
+			padding-bottom: 0.08em;
 			letter-spacing: 0;
 			background: linear-gradient(
 				to right, 
@@ -1726,7 +1741,6 @@
 			.contact-item { font-size: 1rem;}
 			.hero-mark {
 				width: clamp(220px, 54vw, 320px);
-				padding-top: 80px;
 			}
 			nav {
 				gap: 2px;
