@@ -444,8 +444,8 @@
 			min-height: 100vh;
 			display: flex;
 			align-items: center;
-			justify-content: center;
-			text-align: center;
+			justify-content: flex-start;
+			text-align: left;
 			padding: 0 10%;
 			position: relative;
 			z-index: 2;
@@ -461,12 +461,31 @@
 
 		.hero-content {
 			position: relative;
-			max-width: 800px;
+			max-width: 880px;
+			padding-left: 34px;
+			border-left: 2px solid #4cc9f0;
+			animation: heroReveal 0.8s ease-out both;
+		}
+
+		.hero-content::before {
+			content: "DIGITAL STUDIO / LISBON";
+			position: absolute;
+			top: -28px;
+			left: 36px;
+			color: #4cc9f0;
+			font-size: 0.72rem;
+			font-weight: 700;
+			letter-spacing: 3px;
+		}
+
+		@keyframes heroReveal {
+			from { opacity: 0; transform: translateY(18px); }
+			to { opacity: 1; transform: translateY(0); }
 		}
 
 		.hero-mark {
-			width: clamp(360px, 22vw, 460px);
-			margin-bottom: 40px;
+			width: clamp(250px, 22vw, 370px);
+			margin-bottom: 26px;
 			filter: drop-shadow(0 0 10px rgba(0, 174, 255, 0.8));
 			animation: pulse 1s infinite alternate;
 		}
@@ -483,34 +502,37 @@
 		.hero-title {
 			display: flex;
 			align-items: center;
-			justify-content: center;
+			justify-content: flex-start;
 			gap: 16px;
-			margin-bottom: 28px;
+			margin-bottom: 24px;
 		}
 
 		.hero-title span {
-			font-size: clamp(2.2rem, 4vw, 3.2rem);
+			font-size: clamp(1rem, 2vw, 1.35rem);
 			font-weight: 700;
-			letter-spacing: 2px;
+			letter-spacing: 3px;
 			text-transform: uppercase;
 			opacity: 0.9;
 		}
 
 		.hero-title img {
-			height: clamp(48px, 6vw, 72px);
+			height: clamp(38px, 5vw, 60px);
 		}
 
 		.hero p {
-			font-size: 1.1rem;
+			max-width: 580px;
+			margin: 0 0 32px;
+			font-size: 1.12rem;
 			line-height: 1.6;
 			color: #e5e7eb;
-			margin-bottom: 40px;
 		}
 
 		.hero a.button {
-			display: inline-block;
-			padding: 14px 36px;
-			border-radius: 40px;
+			display: inline-flex;
+			align-items: center;
+			gap: 18px;
+			padding: 14px 20px 14px 24px;
+			border-radius: 3px;
 			background: linear-gradient(90deg, #4cc9f0, #f72585);
 			color: #ffffff;
 			text-decoration: none;
@@ -519,9 +541,19 @@
 			transition: transform 0.2s ease, box-shadow 0.2s ease;
 		}
 
+		.hero a.button::after {
+			content: "↗";
+			font-size: 1.1rem;
+			transition: transform 0.2s ease;
+		}
+
 		.hero a.button:hover {
 			transform: translateY(-2px);
 			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+		}
+
+		.hero a.button:hover::after {
+			transform: translate(3px, -3px);
 		}
 
 		/* =========================
@@ -1642,6 +1674,28 @@
 			.footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
 			.about-section { background-color: transparent; }
 			.contact-item { font-size: 1rem;}
+			.hero {
+				justify-content: center;
+				text-align: center;
+				padding: 0 8%;
+			}
+			.hero-content {
+				padding-left: 0;
+				border-left: 0;
+			}
+			.hero-content::before {
+				left: 0;
+				right: 0;
+				top: -24px;
+				text-align: center;
+			}
+			.hero-title {
+				justify-content: center;
+			}
+			.hero p {
+				margin-right: auto;
+				margin-left: auto;
+			}
 			.hero-mark {
 				width: clamp(224px, 32vw, 368px);
 				padding-top: 80px;
