@@ -547,6 +547,11 @@
 			isolation: isolate;
 		}
 
+		.contact-animation-zone {
+			position: relative;
+			z-index: 1;
+		}
+
 		.about-content {
 			max-width: 1240px;
 			margin: 0 auto;
@@ -1228,10 +1233,28 @@
 			padding: 125px 5% 145px;
 			background: transparent;
 			border: 0;
+			position: relative;
+			z-index: 4;
+			box-shadow: 0 58px 100px -36px rgba(0, 0, 0, 0.98), 0 22px 42px -24px rgba(76, 201, 240, 0.22);
+		}
+
+		.newsletter-section::after {
+			content: "";
+			position: absolute;
+			left: 4%;
+			right: 4%;
+			bottom: -92px;
+			height: 145px;
+			background: linear-gradient(180deg, rgba(3, 5, 12, 0.72), transparent 78%);
+			filter: blur(18px);
+			pointer-events: none;
+			z-index: 0;
 		}
 
 		.newsletter-container {
 			max-width: 1260px;
+			position: relative;
+			z-index: 3;
 		}
 
 		.newsletter-heading {
