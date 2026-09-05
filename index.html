@@ -444,8 +444,8 @@
 			min-height: 100vh;
 			display: flex;
 			align-items: center;
-			justify-content: flex-start;
-			text-align: left;
+			justify-content: center;
+			text-align: center;
 			padding: 0 10%;
 			position: relative;
 			z-index: 2;
@@ -461,32 +461,42 @@
 
 		.hero-content {
 			position: relative;
-			max-width: 880px;
-			padding-left: 34px;
-			border-left: 2px solid #4cc9f0;
-			animation: heroReveal 0.8s ease-out both;
+			width: min(900px, 100%);
+			padding: 34px 30px 38px;
+			border: 1px solid rgba(255, 255, 255, 0.12);
+			border-radius: 28px 28px 28px 6px;
+			background: linear-gradient(145deg, rgba(5, 9, 20, 0.34), rgba(5, 9, 20, 0.08));
+			box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+			backdrop-filter: blur(3px);
 		}
 
-		.hero-content::before {
-			content: "DIGITAL STUDIO / LISBON";
-			position: absolute;
-			top: -28px;
-			left: 36px;
-			color: #4cc9f0;
+		.hero-kicker {
+			margin: 0 0 24px;
+			color: #8be8ff;
 			font-size: 0.72rem;
 			font-weight: 700;
-			letter-spacing: 3px;
+			letter-spacing: 4px;
+			text-transform: uppercase;
 		}
 
-		@keyframes heroReveal {
-			from { opacity: 0; transform: translateY(18px); }
-			to { opacity: 1; transform: translateY(0); }
+		.hero-kicker::before,
+		.hero-kicker::after {
+			content: "";
+			display: inline-block;
+			width: 42px;
+			height: 1px;
+			margin: 0 14px 3px;
+			background: linear-gradient(90deg, transparent, #4cc9f0);
+		}
+
+		.hero-kicker::after {
+			background: linear-gradient(90deg, #f72585, transparent);
 		}
 
 		.hero-mark {
-			width: clamp(250px, 22vw, 370px);
-			margin-bottom: 26px;
-			filter: drop-shadow(0 0 10px rgba(0, 174, 255, 0.8));
+			width: clamp(240px, 20vw, 360px);
+			margin-bottom: 28px;
+			filter: drop-shadow(0 0 14px rgba(0, 174, 255, 0.72));
 			animation: pulse 1s infinite alternate;
 		}
 
@@ -502,13 +512,15 @@
 		.hero-title {
 			display: flex;
 			align-items: center;
-			justify-content: flex-start;
-			gap: 16px;
+			justify-content: center;
+			gap: 14px;
 			margin-bottom: 24px;
+			padding-top: 24px;
+			border-top: 1px solid rgba(139, 232, 255, 0.22);
 		}
 
 		.hero-title span {
-			font-size: clamp(1rem, 2vw, 1.35rem);
+			font-size: clamp(1.65rem, 3.5vw, 2.7rem);
 			font-weight: 700;
 			letter-spacing: 3px;
 			text-transform: uppercase;
@@ -516,44 +528,36 @@
 		}
 
 		.hero-title img {
-			height: clamp(38px, 5vw, 60px);
+			height: clamp(42px, 5vw, 64px);
 		}
 
 		.hero p {
-			max-width: 580px;
-			margin: 0 0 32px;
-			font-size: 1.12rem;
-			line-height: 1.6;
-			color: #e5e7eb;
+			max-width: 620px;
+			margin: 0 auto 32px;
+			font-size: 1.05rem;
+			line-height: 1.75;
+			color: #d8e1ec;
 		}
 
 		.hero a.button {
-			display: inline-flex;
-			align-items: center;
-			gap: 18px;
-			padding: 14px 20px 14px 24px;
-			border-radius: 3px;
-			background: linear-gradient(90deg, #4cc9f0, #f72585);
+			display: inline-block;
+			padding: 13px 28px;
+			border: 1px solid rgba(139, 232, 255, 0.52);
+			border-radius: 4px;
+			background: rgba(8, 18, 36, 0.64);
 			color: #ffffff;
 			text-decoration: none;
-			font-weight: 600;
-			letter-spacing: 1px;
-			transition: transform 0.2s ease, box-shadow 0.2s ease;
-		}
-
-		.hero a.button::after {
-			content: "↗";
-			font-size: 1.1rem;
-			transition: transform 0.2s ease;
+			font-size: 0.82rem;
+			font-weight: 700;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 		}
 
 		.hero a.button:hover {
 			transform: translateY(-2px);
+			background: linear-gradient(90deg, #4cc9f0, #f72585);
 			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-		}
-
-		.hero a.button:hover::after {
-			transform: translate(3px, -3px);
 		}
 
 		/* =========================
@@ -1118,7 +1122,7 @@
 		========================= */
 		.services-section {
 			padding: 155px 5% 135px;
-			background: rgba(0, 0, 0, 0.45);
+			background: transparent;
 			border: 0;
 			position: relative;
 			z-index: 2;
@@ -1288,7 +1292,7 @@
 			position: relative;
 			z-index: 2;
 			box-shadow: 0 10px 10px 0px rgba(0, 0, 0, 0.95);
-			background: rgba(0, 0, 0, 0.45);
+			background: transparent;
 			border: 0;
 		}
 
@@ -1674,30 +1678,8 @@
 			.footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
 			.about-section { background-color: transparent; }
 			.contact-item { font-size: 1rem;}
-			.hero {
-				justify-content: center;
-				text-align: center;
-				padding: 0 8%;
-			}
-			.hero-content {
-				padding-left: 0;
-				border-left: 0;
-			}
-			.hero-content::before {
-				left: 0;
-				right: 0;
-				top: -24px;
-				text-align: center;
-			}
-			.hero-title {
-				justify-content: center;
-			}
-			.hero p {
-				margin-right: auto;
-				margin-left: auto;
-			}
 			.hero-mark {
-				width: clamp(224px, 32vw, 368px);
+				width: clamp(220px, 54vw, 320px);
 				padding-top: 80px;
 			}
 			nav {
@@ -1761,6 +1743,7 @@
 		<!-- HOME / HERO -->
 		<section id="home" class="hero">
 			<div class="hero-content">
+				<p class="hero-kicker">Digital studio · Lisbon</p>
 				<img src="../Media/ViVa-Logo.png" alt="ViVia Technologies Logo" class="hero-mark">
 
 				<div class="hero-title">
