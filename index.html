@@ -1039,6 +1039,287 @@
 			color: #08101a;
 		}
 
+		/* =========================
+		EDITORIAL SERVICES + DISPATCHES OVERLAY
+		========================= */
+		.services-section {
+			padding: 155px 5% 135px;
+			background: transparent;
+			border: 0;
+		}
+
+		.services-container {
+			max-width: 1260px;
+		}
+
+		.services-intro {
+			display: grid;
+			grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+			align-items: end;
+			gap: 60px;
+			margin-bottom: 58px;
+		}
+
+		.services-intro h2 {
+			max-width: 760px;
+			margin: 0;
+			text-align: left;
+			font-size: clamp(3rem, 6vw, 6rem);
+			line-height: 0.95;
+			background: linear-gradient(105deg, #ffffff 15%, #d9ff62 70%, #ff765e 105%);
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		.services-lead {
+			margin: 0 0 6px;
+			padding-left: 24px;
+			border-left: 2px solid #d9ff62;
+			color: #d4dbe7;
+			font-size: 1.05rem;
+			line-height: 1.8;
+		}
+
+		.services-nav {
+			justify-content: flex-start;
+			gap: 12px;
+			margin-bottom: 22px;
+			border: 0;
+			padding: 0;
+		}
+
+		.service-btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 12px;
+			padding: 13px 18px;
+			border: 1px solid rgba(255, 255, 255, 0.18);
+			border-radius: 3px;
+			background: rgba(7, 11, 19, 0.78);
+			font-size: 0.9rem;
+			letter-spacing: 0.4px;
+			text-align: left;
+		}
+
+		.service-btn span {
+			color: #9aa7b8;
+			font-size: 0.72rem;
+			font-weight: 700;
+			letter-spacing: 1px;
+		}
+
+		.service-btn::after {
+			bottom: -1px;
+			left: 14px;
+			width: calc(100% - 28px);
+			height: 2px;
+			background: #d9ff62;
+			box-shadow: none;
+		}
+
+		.service-btn.active {
+			border-color: rgba(217, 255, 98, 0.7);
+			background: #172018;
+			color: #ffffff;
+		}
+
+		.service-btn.active span { color: #d9ff62; }
+
+		.services-display {
+			min-height: 440px;
+			padding: 54px;
+			border: 1px solid rgba(255, 255, 255, 0.18);
+			border-radius: 4px;
+			background: rgba(7, 11, 19, 0.9);
+			box-shadow: 0 30px 80px rgba(0, 0, 0, 0.48);
+		}
+
+		.services-display::before {
+			background: linear-gradient(90deg, #d9ff62, #ff765e);
+		}
+
+		.service-content {
+			gap: 70px;
+		}
+
+		.service-index {
+			margin: 0 0 16px;
+			color: #d9ff62 !important;
+			font-size: 0.74rem !important;
+			font-weight: 700;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+		}
+
+		.service-info h3 {
+			margin-bottom: 16px;
+			font-size: clamp(2.3rem, 4vw, 4.2rem);
+			line-height: 0.98;
+		}
+
+		.service-info > p:not(.service-index) {
+			max-width: 430px;
+			margin: 0;
+			font-size: 1.12rem;
+			line-height: 1.75;
+		}
+
+		.service-list {
+			margin-top: 28px;
+			color: #e1e7ef;
+			font-size: 0.98rem;
+			line-height: 2;
+		}
+
+		.service-list li::marker { color: #ff765e; }
+
+		.service-media {
+			gap: 12px;
+		}
+
+		.service-visual {
+			display: flex;
+			min-height: 290px;
+			flex-direction: column;
+			justify-content: space-between;
+			padding: 22px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			border-radius: 3px;
+			color: #08100d;
+			box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.16);
+		}
+
+		.service-visual span {
+			font-size: 0.72rem;
+			font-weight: 800;
+			letter-spacing: 1px;
+		}
+
+		.service-visual strong {
+			font-size: clamp(1.55rem, 2.4vw, 2.4rem);
+			line-height: 0.95;
+		}
+
+		.visual-safety { background: #d9ff62; }
+		.visual-structure { background: #ff765e; }
+		.visual-hardware { background: #8ce8ff; }
+		.visual-access { background: #e9dcff; }
+
+		.newsletter-section {
+			padding: 125px 5% 145px;
+			background: transparent;
+			border: 0;
+		}
+
+		.newsletter-container {
+			max-width: 1260px;
+		}
+
+		.newsletter-heading {
+			align-items: end;
+			margin-bottom: 34px;
+			padding: 0 0 26px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+		}
+
+		.newsletter-heading h2 {
+			margin: 0;
+			font-size: clamp(3.4rem, 7vw, 7rem);
+			line-height: 0.85;
+			background: linear-gradient(105deg, #ffffff 20%, #8ce8ff 70%, #d9ff62 110%);
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		.newsletter-heading > p {
+			max-width: 390px;
+			margin: 0 0 4px;
+			color: #d4dbe7;
+			line-height: 1.75;
+		}
+
+		.newsletter-grid {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 14px;
+		}
+
+		.newsletter-card {
+			display: flex;
+			min-height: 320px;
+			flex-direction: column;
+			align-items: flex-start;
+			padding: 28px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			border-radius: 3px;
+			background: rgba(7, 11, 19, 0.88);
+			box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+		}
+
+		.newsletter-card::before {
+			height: 4px;
+			background: #d9ff62;
+			opacity: 1;
+		}
+
+		.newsletter-card:nth-child(2)::before { background: #ff765e; }
+		.newsletter-card:nth-child(3)::before { background: #8ce8ff; }
+
+		.newsletter-card span {
+			color: #d9ff62;
+			font-size: 0.72rem;
+			letter-spacing: 2px;
+		}
+
+		.newsletter-card:nth-child(2) span { color: #ff9a86; }
+		.newsletter-card:nth-child(3) span { color: #8ce8ff; }
+
+		.newsletter-card h3 {
+			max-width: 280px;
+			margin: auto 0 12px;
+			font-size: 1.65rem;
+			line-height: 1.05;
+		}
+
+		.newsletter-card p {
+			margin: 0 0 24px;
+			color: #b9c5d4;
+			line-height: 1.6;
+		}
+
+		.newsletter-card a {
+			color: #ffffff;
+			font-size: 0.82rem;
+			font-weight: 700;
+			letter-spacing: 1px;
+			text-decoration: none;
+			text-transform: uppercase;
+		}
+
+		.newsletter-card a b {
+			color: #d9ff62;
+			font-size: 1rem;
+			margin-left: 8px;
+		}
+
+		.newsletter-link {
+			margin-top: 26px;
+			padding: 15px 22px;
+			border: 1px solid #d9ff62;
+			border-radius: 3px;
+			background: #d9ff62;
+			color: #08100d;
+			font-weight: 800;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+		}
+
+		.newsletter-link:hover {
+			background: #ffffff;
+			color: #08100d;
+		}
+
 		.img-placeholder {
 			background: linear-gradient(145deg, rgba(76, 201, 240, 0.12), rgba(247, 37, 133, 0.08));
 			border: 1px solid rgba(76, 201, 240, 0.24);
@@ -1079,6 +1360,34 @@
 			}
 			.newsletter-grid {
 				grid-template-columns: 1fr;
+			}
+			.services-intro {
+				grid-template-columns: 1fr;
+				gap: 24px;
+				margin-bottom: 38px;
+			}
+			.services-intro h2 {
+				font-size: clamp(2.8rem, 13vw, 4.8rem);
+			}
+			.services-lead {
+				max-width: 430px;
+				padding-left: 18px;
+			}
+			.services-display {
+				padding: 34px 24px;
+			}
+			.service-content.active {
+				gap: 34px;
+			}
+			.service-media {
+				grid-template-columns: 1fr 1fr;
+			}
+			.service-visual {
+				min-height: 190px;
+				padding: 16px;
+			}
+			.newsletter-heading h2 {
+				font-size: clamp(3.4rem, 18vw, 5.5rem);
 			}
 			.services-container {
 				background-color: transparent;
@@ -1473,18 +1782,26 @@
 			<!-- SERVICES -->
 			<section id="services" class="services-section">
 				<div class="services-container">
-					<h2>Our Services</h2>
-					
+					<div class="services-intro">
+						<div>
+							<p class="section-kicker">What we make possible</p>
+							<h2>Good technology should feel obvious.</h2>
+						</div>
+						<p class="services-lead">We bring sharp thinking to the messy middle between an idea and something people can actually use.</p>
+					</div>
+
 					<div class="services-wrapper">
 						<div class="services-nav">
-							<button class="service-btn active" data-target="service-1">Tech Consultancy</button>
-							<button class="service-btn" data-target="service-2">Making Tech Affordable</button>
+							<button class="service-btn active" data-target="service-1"><span>01</span> Tech Consultancy</button>
+							<button class="service-btn" data-target="service-2"><span>02</span> Making Tech Affordable</button>
 						</div>
 
 						<div class="services-display">
 							<div id="service-1" class="service-content active">
 								<div class="service-info">
+									<p class="service-index">01 / ADVISORY</p>
 									<h3>Tech Consultancy</h3>
+									<p>Make your digital foundations safer, clearer, and easier to build on.</p>
 									<ul class="service-list">
 										<li>Verify the safety of websites</li>
 										<li>Website management and design</li>
@@ -1492,18 +1809,24 @@
 									</ul>
 								</div>
 								<div class="service-media">
-									<div class="img-placeholder">Website safety</div>
-									<div class="img-placeholder">Digital systems</div>
+									<div class="service-visual visual-safety"><span>01</span><strong>Trust<br>the system.</strong></div>
+									<div class="service-visual visual-structure"><span>02</span><strong>Shape<br>what is next.</strong></div>
 								</div>
 							</div>
 							<div id="service-2" class="service-content" style="display: none;">
 								<div class="service-info">
+									<p class="service-index">02 / HARDWARE</p>
 									<h3>Making Tech Affordable</h3>
-									<p>Building cool hardware for people at a more affordable price!</p>
+									<p>Build useful, exciting hardware without making access feel exclusive.</p>
+									<ul class="service-list">
+										<li>Human-first product thinking</li>
+										<li>Practical prototyping</li>
+										<li>More technology for more people</li>
+									</ul>
 								</div>
 								<div class="service-media">
-									<div class="img-placeholder">Thoughtful hardware</div>
-									<div class="img-placeholder">Accessible tech</div>
+									<div class="service-visual visual-hardware"><span>01</span><strong>Useful<br>by design.</strong></div>
+									<div class="service-visual visual-access"><span>02</span><strong>Open the<br>door wider.</strong></div>
 								</div>
 							</div>
 						</div>
@@ -1515,24 +1838,30 @@
 			<section class="newsletter-section" id="newsletter">
 				<div class="newsletter-container">
 					<div class="newsletter-heading">
-						<h2>Newsletter</h2>
-						<p>Ideas, projects, and practical tech insights from the ViVia team.</p>
+						<div>
+							<p class="section-kicker">Notes from the workbench</p>
+							<h2>Dispatches</h2>
+						</div>
+						<p>Short thoughts on building better digital products, safer systems, and technology that earns its place.</p>
 					</div>
 					<div class="newsletter-grid">
 						<article class="newsletter-card">
-							<span>Featured blog</span>
+							<span>01 / FIELD NOTE</span>
 							<h3>Building a safer web presence</h3>
-							<p>Placeholder article coming soon.</p>
+							<p>What we look for before a website earns trust.</p>
+							<a href="blogs.html" aria-label="Read Building a safer web presence">Read note <b>↗</b></a>
 						</article>
 						<article class="newsletter-card">
-							<span>Featured blog</span>
+							<span>02 / FIELD NOTE</span>
 							<h3>Making technology more accessible</h3>
-							<p>Placeholder article coming soon.</p>
+							<p>Why affordability is a design decision, not an afterthought.</p>
+							<a href="blogs.html" aria-label="Read Making technology more accessible">Read note <b>↗</b></a>
 						</article>
 						<article class="newsletter-card">
-							<span>Featured blog</span>
+							<span>03 / FIELD NOTE</span>
 							<h3>Inside our digital toolbox</h3>
-							<p>Placeholder article coming soon.</p>
+							<p>A closer look at the habits that keep small teams moving.</p>
+							<a href="blogs.html" aria-label="Read Inside our digital toolbox">Read note <b>↗</b></a>
 						</article>
 					</div>
 					<a class="newsletter-link" href="blogs.html">See more</a>
