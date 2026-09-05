@@ -113,12 +113,16 @@
 			/* =========================
 			CIRCUIT ANIMATION
 			========================= */
-			function initializeCircuitAnimation(canvasId, containerSelector) {
+			function initializeCircuitAnimation(canvasId, containerSelector, particleMultiplier) {
 				const canvas = document.getElementById(canvasId);
 				if (!canvas) return;
 				const ctx = canvas.getContext("2d");
+				const container = document.querySelector(containerSelector);
+				if (!container) return;
 
 				let width, height;
+				let animationFrame;
+				let isVisible = false;
 				const particles = [];
 				const colors = ["#0091ff", "#5d00ff", "#ff00e1"];
 
@@ -127,7 +131,7 @@
 
 				// 2. CONDITIONAL SETTINGS
 				const CONFIG = {
-					maxParticles: isMobile ? 12 : 20,
+					maxParticles: Math.max(1, Math.round((isMobile ? 12 : 20) * particleMultiplier)),
 					trailLength:  isMobile ? 60 : 400,
 					dprLimit:     isMobile ? 2  : 3,
 					radiusMin:    isMobile ? 4  : 8,
@@ -141,7 +145,6 @@
 				const TURN_CHANCE = 0.007; 
 
 				function resizeCanvas() {
-					const container = document.querySelector(containerSelector);
 					const dpr = Math.min(window.devicePixelRatio || 1, CONFIG.dprLimit);
 					
 					width = container.offsetWidth;
@@ -286,18 +289,32 @@
 				}
 
 				function animate() {
+					if (!isVisible) {
+						animationFrame = null;
+						return;
+					}
 					ctx.clearRect(0, 0, width, height);
 					for (let p of particles) {
 						p.update();
 						p.draw();
 					}
-					requestAnimationFrame(animate);
+					animationFrame = requestAnimationFrame(animate);
 				}
-				animate();
+
+				const visibilityObserver = new IntersectionObserver(([entry]) => {
+					isVisible = entry.isIntersecting;
+					if (isVisible && !animationFrame) animate();
+					if (!isVisible && animationFrame) {
+						cancelAnimationFrame(animationFrame);
+						animationFrame = null;
+					}
+				}, { threshold: 0.1 });
+
+				visibilityObserver.observe(container);
 			}
 
-			initializeCircuitAnimation("about-circuit-canvas", ".about-animation-zone");
-			initializeCircuitAnimation("contact-circuit-canvas", ".contact-animation-zone");
+			initializeCircuitAnimation("about-circuit-canvas", ".about-animation-zone", 0.5);
+			initializeCircuitAnimation("contact-circuit-canvas", ".contact-animation-zone", 0.25);
 		});
 	</script>
 
@@ -1445,7 +1462,9 @@
 		CONTACT SECTION (Enlarged)
 		========================= */
 		#contact {
-			background: transparent;
+			background:
+				radial-gradient(circle at 18% 18%, rgba(76, 201, 240, 0.2), transparent 34%),
+				linear-gradient(135deg, #080b18 0%, #1b1640 54%, #130b25 100%);
 			z-index: auto;
 			min-height: 60vh;
 			display: flex;
