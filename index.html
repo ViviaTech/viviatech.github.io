@@ -791,8 +791,8 @@
 		REFINED HORIZONTAL SERVICES
 		========================= */
 		.services-section {
-		/* rgba(8, 10, 18, 0.9) is your original dark navy with 90% opacity */
-			background: rgba(8, 10, 18, 1); 
+			background:
+				linear-gradient(135deg, rgba(8, 10, 18, 0.96) 0%, rgba(16, 28, 48, 0.9) 52%, rgba(11, 14, 25, 0.96) 100%);
 			color: #ffffff;
 			padding: 120px 5%;
 			position: relative;
@@ -917,16 +917,18 @@
 		}
 
 		.newsletter-section {
-			background: linear-gradient(180deg, rgba(8, 10, 18, 1), rgba(20, 30, 48, 1));
+			background: linear-gradient(180deg, rgba(8, 10, 18, 0.82), rgba(20, 30, 48, 0.78));
 			color: #ffffff;
 			padding: 100px 5%;
 			position: relative;
-			z-index: 10;
+			z-index: auto;
 		}
 
 		.newsletter-container {
 			max-width: 1200px;
 			margin: 0 auto;
+			position: relative;
+			z-index: 3;
 		}
 
 		.newsletter-heading {
@@ -1112,7 +1114,7 @@
 				rgba(8, 10, 18, 1) 0%, 
 				rgba(40, 55, 70, 1) 100%
 			);
-			z-index: 1;
+			z-index: auto;
 			min-height: 60vh; /* Increased to 100vh to make the gradient transition feel more natural */
 			display: flex;
 			align-items: center;
@@ -1131,7 +1133,8 @@
 			border-radius: 50px;
 			text-align: center;
 			box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
-			z-index: 1;
+			position: relative;
+			z-index: 3;
 		}
 
 		.contact-container h2 {
