@@ -792,13 +792,13 @@
 		========================= */
 		.services-section {
 			background:
-			linear-gradient(135deg, #080c16 0%, #111d32 52%, #0b101d 100%);
+			linear-gradient(135deg, #080d18 0%, #101d33 52%, #0a101d 100%);
 			color: #ffffff;
-			padding: 120px 5%;
+			padding: 130px 5% 115px;
 			position: relative;
 			z-index: auto;
-			border-top: 1px solid rgba(130, 215, 255, 0.12);
-			border-bottom: 1px solid rgba(130, 215, 255, 0.12);
+			border-top: 1px solid rgba(139, 232, 255, 0.18);
+			border-bottom: 1px solid rgba(139, 232, 255, 0.1);
 		}
 
 		.services-container {
@@ -868,11 +868,22 @@
 		/* Content Card */
 		.services-display {
 			background: #101a2c;
-			border: 1px solid rgba(139, 232, 255, 0.16);
+			border: 1px solid rgba(139, 232, 255, 0.2);
 			border-radius: 24px 24px 24px 6px;
 			padding: 60px;
 			min-height: 450px;
 			box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+			position: relative;
+			overflow: hidden;
+		}
+
+		.services-display::before {
+			content: "";
+			position: absolute;
+			inset: 0 0 auto;
+			height: 3px;
+			background: linear-gradient(90deg, #4cc9f0, #f72585);
+			opacity: 0.85;
 		}
 
 		.service-content {
@@ -920,12 +931,12 @@
 		}
 
 		.newsletter-section {
-			background: linear-gradient(180deg, #0b101b 0%, #17243a 100%);
+			background: linear-gradient(180deg, #0a101c 0%, #15243b 100%);
 			color: #ffffff;
-			padding: 100px 5%;
+			padding: 115px 5% 125px;
 			position: relative;
 			z-index: auto;
-			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+			border-bottom: 1px solid rgba(139, 232, 255, 0.14);
 		}
 
 		.newsletter-container {
@@ -940,7 +951,9 @@
 			align-items: end;
 			justify-content: space-between;
 			gap: 30px;
-			margin-bottom: 40px;
+			margin-bottom: 42px;
+			padding-bottom: 26px;
+			border-bottom: 1px solid rgba(139, 232, 255, 0.14);
 		}
 
 		.newsletter-heading h2 {
@@ -968,7 +981,7 @@
 		.newsletter-card {
 			min-height: 190px;
 			padding: 28px;
-			border: 1px solid rgba(139, 232, 255, 0.16);
+			border: 1px solid rgba(139, 232, 255, 0.2);
 			border-radius: 18px;
 			background: #101a2c;
 			box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
@@ -1074,6 +1087,16 @@
 			.about-section {
 				padding: 90px 6% 80px;
 			}
+			.about-intro {
+				padding: 28px 24px 30px;
+				border: 1px solid rgba(139, 232, 255, 0.18);
+				border-radius: 20px 20px 20px 5px;
+				background: #0c1422;
+				box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+			}
+			.about-intro h2 {
+				font-size: clamp(2.6rem, 11vw, 4.3rem);
+			}
 			.about-overview {
 				grid-template-columns: 1fr;
 				gap: 18px;
@@ -1112,31 +1135,31 @@
 		CONTACT SECTION (Enlarged)
 		========================= */
 		#contact {
-			/* Gradient goes from your dark navy to a clean, light grey-white */
 			background: linear-gradient(
-				180deg, 
-				rgba(8, 10, 18, 1) 0%, 
-				rgba(40, 55, 70, 1) 100%
+				180deg,
+				#0a101c 0%,
+				#101b2d 48%,
+				#0b111d 100%
 			);
 			z-index: auto;
-			min-height: 60vh; /* Increased to 100vh to make the gradient transition feel more natural */
+			min-height: 60vh;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			padding: 100px 10%; /* Increased top padding so the text doesn't hit the dark top immediately */
+			padding: 125px 10%;
+			border-bottom: 1px solid rgba(139, 232, 255, 0.12);
 			position: relative;
 		}
 
 		.contact-container {
 			width: 100%;
 			max-width: 1500px; /* Wider container */
-			background: rgba(8, 10, 18, 0.85);
-			border: 1px solid rgba(255, 255, 255, 0.05);
-			backdrop-filter: blur(15px);
-			padding: 120px 60px; /* Much more internal breathing room */
-			border-radius: 50px;
+			background: linear-gradient(145deg, #111d31 0%, #0b1322 100%);
+			border: 1px solid rgba(139, 232, 255, 0.22);
+			padding: 110px 60px;
+			border-radius: 28px 28px 28px 6px;
 			text-align: center;
-			box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+			box-shadow: 0 40px 100px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 			position: relative;
 			z-index: 3;
 		}
