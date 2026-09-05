@@ -800,6 +800,99 @@
 			gap: 15px;
 		}
 
+		.service-list {
+			margin: 24px 0 0;
+			padding-left: 1.2rem;
+			color: #cbd5e1;
+			font-size: 1.1rem;
+			line-height: 1.9;
+		}
+
+		.newsletter-section {
+			background: linear-gradient(180deg, rgba(8, 10, 18, 1), rgba(20, 30, 48, 1));
+			color: #ffffff;
+			padding: 100px 5%;
+		}
+
+		.newsletter-container {
+			max-width: 1200px;
+			margin: 0 auto;
+		}
+
+		.newsletter-heading {
+			display: flex;
+			align-items: end;
+			justify-content: space-between;
+			gap: 30px;
+			margin-bottom: 40px;
+		}
+
+		.newsletter-heading h2 {
+			margin: 0;
+			font-size: 3rem;
+			background: linear-gradient(to right, #ffffff, #4cc9f0);
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		.newsletter-heading p {
+			max-width: 470px;
+			margin: 0;
+			color: #94a3b8;
+			line-height: 1.7;
+		}
+
+		.newsletter-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 20px;
+		}
+
+		.newsletter-card {
+			min-height: 190px;
+			padding: 28px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 18px;
+			background: rgba(15, 23, 42, 0.7);
+			box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+		}
+
+		.newsletter-card span {
+			color: #f72585;
+			font-size: 0.8rem;
+			font-weight: 700;
+			letter-spacing: 1.5px;
+			text-transform: uppercase;
+		}
+
+		.newsletter-card h3 {
+			margin: 18px 0 10px;
+			font-size: 1.35rem;
+		}
+
+		.newsletter-card p {
+			margin: 0;
+			color: #cbd5e1;
+			line-height: 1.6;
+		}
+
+		.newsletter-link {
+			display: inline-block;
+			margin-top: 30px;
+			padding: 13px 24px;
+			border: 1px solid #4cc9f0;
+			border-radius: 999px;
+			color: #ffffff;
+			text-decoration: none;
+			transition: background 0.25s ease, color 0.25s ease;
+		}
+
+		.newsletter-link:hover {
+			background: #4cc9f0;
+			color: #08101a;
+		}
+
 		.img-placeholder {
 			background: rgba(255, 255, 255, 0.03);
 			border: 1px dashed rgba(255, 255, 255, 0.2);
@@ -828,6 +921,13 @@
 				padding: 30px;
 			}
 			.service-content.active {
+				grid-template-columns: 1fr;
+			}
+			.newsletter-heading {
+				align-items: start;
+				flex-direction: column;
+			}
+			.newsletter-grid {
 				grid-template-columns: 1fr;
 			}
 			.about-content, .services-container {
@@ -1163,41 +1263,65 @@
 					
 					<div class="services-wrapper">
 						<div class="services-nav">
-							<button class="service-btn active" data-target="service-1">Coming soon</button>
-							<button class="service-btn" data-target="service-2">Coming soon</button>
-							<button class="service-btn" data-target="service-3">Coming soon</button>
+							<button class="service-btn active" data-target="service-1">Tech Consultancy</button>
+							<button class="service-btn" data-target="service-2">Making Tech Affordable</button>
 						</div>
 
 						<div class="services-display">
 							<div id="service-1" class="service-content active">
 								<div class="service-info">
-									<h3>To be announced</h3>
+									<h3>Tech Consultancy</h3>
+									<ul class="service-list">
+										<li>Verify the safety of websites</li>
+										<li>Website management and design</li>
+										<li>Tech structure rework</li>
+									</ul>
 								</div>
 								<div class="service-media">
-									<div class="img-placeholder">UI Animation Preview</div>
-									<div class="img-placeholder">Responsive Layout</div>
+									<div class="img-placeholder">Website safety</div>
+									<div class="img-placeholder">Digital systems</div>
 								</div>
 							</div>
-						<div id="service-2" class="service-content active" style="display: none;">
+							<div id="service-2" class="service-content" style="display: none;">
 								<div class="service-info">
-									<h3>To be announced</h3>
+									<h3>Making Tech Affordable</h3>
+									<p>Building cool hardware for people at a more affordable price!</p>
 								</div>
 								<div class="service-media">
-									<div class="img-placeholder">UI Animation Preview</div>
-									<div class="img-placeholder">Responsive Layout</div>
+									<div class="img-placeholder">Thoughtful hardware</div>
+									<div class="img-placeholder">Accessible tech</div>
 								</div>
 							</div>
-						<div id="service-3" class="service-content active" style="display: none;">
-								<div class="service-info">
-									<h3>To be announced</h3>
-								</div>
-								<div class="service-media">
-									<div class="img-placeholder">UI Animation Preview</div>
-									<div class="img-placeholder">Responsive Layout</div>
-								</div>
-							</div>
-							</div>
+						</div>
 					</div>
+				</div>
+			</section>
+
+			<!-- NEWSLETTER -->
+			<section class="newsletter-section" id="newsletter">
+				<div class="newsletter-container">
+					<div class="newsletter-heading">
+						<h2>Newsletter</h2>
+						<p>Ideas, projects, and practical tech insights from the ViVia team.</p>
+					</div>
+					<div class="newsletter-grid">
+						<article class="newsletter-card">
+							<span>Featured blog</span>
+							<h3>Building a safer web presence</h3>
+							<p>Placeholder article coming soon.</p>
+						</article>
+						<article class="newsletter-card">
+							<span>Featured blog</span>
+							<h3>Making technology more accessible</h3>
+							<p>Placeholder article coming soon.</p>
+						</article>
+						<article class="newsletter-card">
+							<span>Featured blog</span>
+							<h3>Inside our digital toolbox</h3>
+							<p>Placeholder article coming soon.</p>
+						</article>
+					</div>
+					<a class="newsletter-link" href="blogs.html">See more</a>
 				</div>
 			</section>
 			<!-- CONTACT -->
