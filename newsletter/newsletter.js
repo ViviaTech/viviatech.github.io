@@ -40,11 +40,19 @@
 		['news', 'events', 'blogs'].forEach((category) => { document.querySelector(`[data-list="${category}"]`).innerHTML = articles.filter((article) => article.category === category).map(archiveCard).join(''); });
 	};
 
-	document.querySelectorAll('.category-button').forEach((button) => button.addEventListener('click', () => {
-		const category = button.dataset.category;
+	const selectCategory = (category) => {
+		const button = document.querySelector(`[data-category="${category}"]`);
+		if (!button) return;
 		document.querySelectorAll('.category-button').forEach((item) => item.classList.toggle('is-active', item === button));
 		document.querySelectorAll('.journal-view').forEach((view) => view.classList.toggle('is-visible', view.dataset.view === category));
+	};
+	document.querySelectorAll('.category-button').forEach((button) => button.addEventListener('click', () => {
+		const category = button.dataset.category;
+		selectCategory(category);
 	}));
+	const selectHashCategory = () => selectCategory(location.hash.slice(1));
+	window.addEventListener('hashchange', selectHashCategory);
+	if (location.hash) selectHashCategory();
 
 	if (document.querySelector('[data-featured-grid], [data-newsletter-grid]')) render().catch((error) => console.error('Newsletter could not load:', error));
 })();
