@@ -11,7 +11,8 @@
 			}).then((html) => {
 				const document = parser.parseFromString(html, 'text/html');
 				const meta = (name) => document.querySelector(`meta[name="${name}"]`)?.content || '';
-				return { path, category: meta('category'), featured: meta('featured') === 'true', title: meta('title') || document.querySelector('h1')?.textContent.trim(), description: meta('description') || document.querySelector('.article-dek')?.textContent.trim(), image: meta('image'), label: meta('label'), date: meta('date'), source: document };
+				const image = meta('image').replace(/^\.\.\//, '');
+				return { path, category: meta('category'), featured: meta('featured') === 'true', title: meta('title') || document.querySelector('h1')?.textContent.trim(), description: meta('description') || document.querySelector('.article-dek')?.textContent.trim(), image: image || 'Media/Background1.jpg', label: meta('label'), date: meta('date'), source: document };
 			}));
 		}
 		return cache.get(path);
@@ -20,7 +21,7 @@
 	const storyCard = (article, index, featured = false) => `<a class="feature-card${featured && index === 0 ? ' feature-card--large' : ''}" href="${article.path}"><div class="card-image"><img src="${article.image}" alt=""><span class="card-number">0${index + 1}</span></div><div class="card-copy"><p class="tag">${article.label}</p><h3>${article.title}</h3><p>${article.description}</p><span class="read-more">Read story <b>↗</b></span></div></a>`;
 	const archiveCard = (article, index) => `<a class="archive-card" href="${article.path}"><img src="${article.image}" alt=""><span class="archive-index">0${index + 1}</span><div><p class="tag">${article.label}</p><h3>${article.title}</h3><p>${article.description}</p><span class="read-more">Read story <b>↗</b></span></div></a>`;
 	const miniStory = (article) => `<a class="mini-story" href="${article.path}"><img src="${article.image}" alt=""><span><b>${article.category}</b><strong>${article.title}</strong><small>${article.date}</small></span></a>`;
-	const newsletterCard = (article, index) => `<article class="newsletter-card"><img class="newsletter-card-image" src="${article.image}" alt=""><div class="newsletter-card-content"><span>0${index + 1} / ${article.label.toUpperCase()}</span><h3>${article.title}</h3><p>${article.description}</p><a href="${article.path}" aria-label="Read ${article.title}">Read note <b>↗</b></a></div></article>`;
+	const newsletterCard = (article, index) => `<article class="newsletter-card"><img class="newsletter-card-image" src="${article.image}" alt="${article.title}"><div class="newsletter-card-content"><span>0${index + 1} / ${article.label.toUpperCase()}</span><h3>${article.title}</h3><p>${article.description}</p><a href="${article.path}" aria-label="Read ${article.title}">Read note <b>↗</b></a></div></article>`;
 
 	const render = async () => {
 		const articles = (await Promise.all(articlePaths.map(readArticle))).filter(Boolean);
