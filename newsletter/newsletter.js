@@ -22,9 +22,12 @@
 	const archiveCard = (article, index) => `<a class="archive-card" href="${article.path}"><img src="${article.image}" alt=""><span class="archive-index">0${index + 1}</span><div><p class="tag">${article.label}</p><h3>${article.title}</h3><p>${article.description}</p><span class="read-more">Read story <b>↗</b></span></div></a>`;
 	const miniStory = (article) => `<a class="mini-story" href="${article.path}"><img src="${article.image}" alt=""><span><b>${article.category}</b><strong>${article.title}</strong><small>${article.date}</small></span></a>`;
 	const newsletterCard = (article, index) => `<article class="newsletter-card"><img class="newsletter-card-image" src="${article.image}" alt="${article.title}"><div class="newsletter-card-content"><span>0${index + 1} / ${article.label.toUpperCase()}</span><h3>${article.title}</h3><p>${article.description}</p><a href="${article.path}" aria-label="Read ${article.title}">Read note <b>↗</b></a></div></article>`;
+	const emptyState = (category) => `<p class="archive-empty">No ${category} stories yet. Check back soon.</p>`;
 
 	const render = async () => {
-		const articles = (await Promise.all(articlePaths.map(readArticle))).filter(Boolean);
+		const results = await Promise.allSettled(articlePaths.map(readArticle));
+		const articles = results.filter((result) => result.status === 'fulfilled').map((result) => result.value).filter(Boolean);
+		results.filter((result) => result.status === 'rejected').forEach((result) => console.warn(result.reason));
 		const featured = articles.filter((article) => article.featured).slice(0, 3);
 		const archive = articles.filter((article) => !article.featured);
 		const homepageGrid = document.querySelector('[data-newsletter-grid]');
@@ -37,18 +40,28 @@
 			const count = category === 'featured' ? featured.length : articles.filter((article) => article.category === category).length;
 			document.querySelector(`[data-count="${category}"]`).textContent = String(count).padStart(2, '0');
 		});
-		['news', 'events', 'blogs'].forEach((category) => { document.querySelector(`[data-list="${category}"]`).innerHTML = articles.filter((article) => article.category === category).map(archiveCard).join(''); });
+		['news', 'events', 'blogs'].forEach((category) => {
+			const categoryArticles = articles.filter((article) => article.category === category);
+			document.querySelector(`[data-list="${category}"]`).innerHTML = categoryArticles.length ? categoryArticles.map(archiveCard).join('') : emptyState(category);
+		});
 	};
 
 	const selectCategory = (category) => {
 		const button = document.querySelector(`[data-category="${category}"]`);
-		if (!button) return;
-		document.querySelectorAll('.category-button').forEach((item) => item.classList.toggle('is-active', item === button));
+		if (!button) category = 'featured';
+		const selectedButton = document.querySelector(`[data-category="${category}"]`);
+		if (!selectedButton) return;
+		document.querySelectorAll('.category-button').forEach((item) => {
+			const isActive = item === selectedButton;
+			item.classList.toggle('is-active', isActive);
+			item.setAttribute('aria-pressed', String(isActive));
+		});
 		document.querySelectorAll('.journal-view').forEach((view) => view.classList.toggle('is-visible', view.dataset.view === category));
 	};
 	document.querySelectorAll('.category-button').forEach((button) => button.addEventListener('click', () => {
 		const category = button.dataset.category;
 		selectCategory(category);
+		 history.replaceState(null, '', category === 'featured' ? location.pathname : `#${category}`);
 	}));
 	const selectHashCategory = () => selectCategory(location.hash.slice(1));
 	window.addEventListener('hashchange', selectHashCategory);
