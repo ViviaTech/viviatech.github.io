@@ -4,6 +4,7 @@
 	const parser = new DOMParser();
 
 	const readArticle = async (path) => {
+		if (typeof path === 'object') return Promise.resolve(path);
 		if (!cache.has(path)) {
 			cache.set(path, fetch(path).then((response) => {
 				if (!response.ok) throw new Error(`Could not load ${path}`);

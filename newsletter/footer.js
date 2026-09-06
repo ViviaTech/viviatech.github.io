@@ -9,7 +9,7 @@
 		<div class="journal-footer__inner">
 			<div class="journal-footer__main">
 				<div class="journal-footer__brand-block">
-					<a class="journal-footer__brand" href="${link('index.html')}" aria-label="Back to ViVia home"><img src="${link('Media/ViVa-V-Logo.png')}" alt=""><span>ViVia Technologies</span></a>
+					<a class="journal-footer__brand" href="${link('blogs.html')}" aria-label="Back to ViVia Journal"><img src="${link('Media/ViVa-V-Logo.png')}" alt=""><span>ViVia Journal</span></a>
 					<p>Clearer, more useful technology for people with ambitious ideas.</p>
 					<span class="journal-footer__location">Lisbon, Portugal · Est. 2026</span>
 				</div>

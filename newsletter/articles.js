@@ -1,7 +1,7 @@
 window.NEWSLETTER_ARTICLES = [
-	'newsletter/events/vivia-at-websummit.html',
-	'newsletter/blogs/quietly-powerful.html',
-	'newsletter/blogs/unfinished-idea.html',
-	'newsletter/news/tools-we-take.html',
-	'newsletter/news/meet-the-team.html'
+	{ path: 'newsletter/events/vivia-at-websummit.html', category: 'events', featured: true, title: 'ViVia Technologies is coming to Web Summit Lisbon', description: 'Meet the ViVia Technologies team at Web Summit Lisbon as we share our vision for clearer, kinder technology.', image: 'Media/Websummit.png', label: 'Web Summit Lisbon', date: '09.11.26' },
+	{ path: 'newsletter/blogs/quietly-powerful.html', category: 'blogs', featured: true, title: 'The case for technology that feels quietly powerful', description: 'Good tools do not ask for attention. They give it back.', image: 'Media/Background1.jpg', label: 'Perspective', date: '04.02.26' },
+	{ path: 'newsletter/blogs/unfinished-idea.html', category: 'blogs', featured: false, title: 'Make room for the unfinished idea', description: 'Why the most useful thinking often starts out a little unclear.', image: 'Media/Background.jpg', label: 'Perspective', date: '05.01.26' },
+	{ path: 'newsletter/news/tools-we-take.html', category: 'news', featured: false, title: 'The tools we are taking with us', description: 'A look at the principles guiding our next generation of digital products.', image: 'Media/Background1.jpg', label: 'Product note', date: '30.01.26' },
+	{ path: 'newsletter/news/meet-the-team.html', category: 'news', featured: false, title: 'Meet the people behind the pixels', description: 'The curious, practical minds making the ViVia point of view real every day.', image: 'Media/human1.jpg', label: 'Team', date: '24.01.26' }
 ];
