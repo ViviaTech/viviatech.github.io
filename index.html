@@ -1843,59 +1843,211 @@
 		FOOTER (Anchored at Bottom)
 		========================= */
 		footer {
-			background: #030406;
-			padding: 60px 10%;
-			border-top: 1px solid rgba(255, 255, 255, 0.05);
+			position: relative;
+			padding: 88px 8% 28px;
+			border-top: 1px solid rgba(139, 232, 255, 0.18);
+			background:
+				radial-gradient(circle at 85% 10%, rgba(76, 201, 240, 0.12), transparent 30%),
+				linear-gradient(145deg, #05070d 0%, #0b1220 62%, #110b20 100%);
+			overflow: hidden;
+		}
+
+		footer::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 8%;
+			width: 84%;
+			height: 2px;
+			background: linear-gradient(90deg, #4cc9f0, #f72585, transparent);
 		}
 
 		.footer-content {
-			max-width: 1200px;
+			position: relative;
+			z-index: 1;
+			max-width: 1260px;
 			margin: 0 auto;
-			display: flex;
-			flex-direction: column;
+		}
+
+		.footer-main {
+			display: grid;
+			grid-template-columns: minmax(280px, 1.4fr) repeat(2, minmax(150px, 0.6fr)) minmax(240px, 0.9fr);
+			gap: 48px;
+			padding-bottom: 68px;
+		}
+
+		.footer-brand {
+			display: inline-flex;
+			width: fit-content;
 			align-items: center;
-			gap: 40px;
+			gap: 12px;
+			color: #ffffff;
+			font-size: 0.9rem;
+			font-weight: 800;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+		}
+
+		.footer-brand img {
+			width: 42px;
+			height: 42px;
+			object-fit: contain;
+			filter: drop-shadow(0 0 10px rgba(76, 201, 240, 0.5));
+		}
+
+		.footer-intro p {
+			max-width: 300px;
+			margin: 25px 0 0;
+			color: #9baabd;
+			font-size: 0.96rem;
+			line-height: 1.75;
+		}
+
+		.footer-intro-copy {
+			max-width: 210px;
+			margin: 0;
+			color: #9baabd;
+			font-size: 0.86rem;
+			line-height: 1.6;
+		}
+
+		.footer-heading {
+			margin: 3px 0 20px;
+			color: #4cc9f0;
+			font-size: 0.7rem;
+			font-weight: 800;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+		}
+
+		.footer-nav,
+		.footer-contact {
+			display: grid;
+			align-content: start;
+			gap: 13px;
+		}
+
+		.footer-nav a,
+		.footer-contact a {
+			width: fit-content;
+			color: #d7e0eb;
+			font-size: 0.9rem;
+			text-decoration: none;
+			transition: color 0.2s ease, transform 0.2s ease;
+		}
+
+		.footer-nav a:hover,
+		.footer-contact a:hover {
+			color: #8be8ff;
+			transform: translateX(4px);
+		}
+
+		.footer-contact .footer-email {
+			color: #ffffff;
+			font-size: 0.86rem;
+			word-break: break-word;
+		}
+
+		.footer-cta {
+			display: inline-flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 22px;
+			margin-top: 5px;
+			padding: 13px 16px;
+			border: 1px solid rgba(76, 201, 240, 0.55);
+			border-radius: 3px;
+			background: rgba(76, 201, 240, 0.1);
+			color: #ffffff;
+			font-size: 0.75rem;
+			font-weight: 800;
+			letter-spacing: 1px;
+			text-decoration: none;
+			text-transform: uppercase;
+			transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+		}
+
+		.footer-cta:hover {
+			transform: translateY(-2px);
+			border-color: #8be8ff;
+			background: rgba(76, 201, 240, 0.22);
+		}
+
+		.footer-cta b {
+			color: #d8f37d;
+			font-size: 1.1rem;
 		}
 
 		.social-links {
 			display: flex;
-			gap: 40px;
+			gap: 10px;
 			flex-wrap: wrap;
-			justify-content: center;
+			margin-top: 24px;
 		}
 
 		.social-icon {
-			color: #94a3b8;
-			font-size: 1rem;
+			padding: 9px 11px;
+			border: 1px solid rgba(255, 255, 255, 0.12);
+			border-radius: 3px;
+			color: #aebdce;
+			font-size: 0.7rem;
 			text-decoration: none;
 			text-transform: uppercase;
 			letter-spacing: 2px;
 			font-weight: 600;
 			transition: all 0.3s ease;
-			padding: 10px;
 		}
 
 		.social-icon:hover {
-			color: #f72585;
-			transform: translateY(-5px);
+			border-color: #f72585;
+			color: #ffffff;
+			transform: translateY(-2px);
 		}
 
 		.footer-bottom {
 			width: 100%;
-			padding-top: 40px;
-			border-top: 1px solid rgba(255, 255, 255, 0.03);
+			padding-top: 22px;
+			border-top: 1px solid rgba(255, 255, 255, 0.12);
 			display: flex;
 			justify-content: space-between; /* Space out copyright and tagline */
 			align-items: center;
-			color: #475569;
-			font-size: 0.8rem;
+			gap: 24px;
+			color: #718198;
+			font-size: 0.72rem;
+			letter-spacing: 0.4px;
+		}
+
+		.footer-bottom p { margin: 0; }
+
+		.footer-legal {
+			display: flex;
+			gap: 18px;
+		}
+
+		.footer-legal a {
+			color: #718198;
+			text-decoration: none;
+		}
+
+		.footer-legal a:hover { color: #ffffff; }
+
+		.footer-location {
+			margin-top: 18px;
+			color: #718198;
+			font-size: 0.7rem;
+			letter-spacing: 1px;
+			text-transform: uppercase;
 		}
 
 		/* Responsive Adjustments */
 		@media (max-width: 768px) {
 			.contact-container h2 { font-size: 3rem; }
 			.contact-details { grid-template-columns: 1fr; }
-			.footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+			footer { padding: 68px 7% 24px; }
+			footer::before { left: 7%; width: 86%; }
+			.footer-main { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 42px 24px; padding-bottom: 48px; }
+			.footer-intro { grid-column: 1 / -1; }
+			.footer-bottom { align-items: flex-start; flex-direction: column; gap: 16px; }
 			.about-section { background-color: transparent; }
 			.contact-item { font-size: 1rem;}
 			.contact-action { align-items: flex-start; flex-direction: column; gap: 12px; }
@@ -1937,6 +2089,13 @@
 			.about-text {
 				font-size: 1.1rem;
 			}
+		}
+
+		@media (max-width: 480px) {
+			.footer-main { grid-template-columns: 1fr; gap: 30px; }
+			.footer-intro { grid-column: auto; }
+			.footer-bottom { font-size: 0.68rem; }
+			.footer-legal { flex-wrap: wrap; }
 		}
 
 		.header-wrapper,
@@ -2177,14 +2336,39 @@
 			</div>
 		<footer>
 			<div class="footer-content">
-				<div class="social-links">
-					<a href="#contact" class="social-icon">Contact</a>
-					<a href="tel:+351928214629" class="social-icon">Call</a>
+				<div class="footer-main">
+					<div class="footer-intro">
+						<a class="footer-brand" href="#home"><img src="Media/ViVa-V-Logo.png" alt=""><span>ViVia Technologies</span></a>
+						<p>Clearer, more useful technology for people with ambitious ideas.</p>
+						<p class="footer-location">Lisbon, Portugal · Est. 2026</p>
+					</div>
+					<nav class="footer-nav" aria-label="Footer navigation">
+						<p class="footer-heading">Explore</p>
+						<a href="#about">About ViVia</a>
+						<a href="#services">Services</a>
+						<a href="blogs.html">Journal</a>
+						<a href="#contact">Contact</a>
+					</nav>
+					<div class="footer-contact">
+						<p class="footer-heading">Reach out</p>
+						<a class="footer-email" href="#contact">viviatechnologies@gmail.com</a>
+						<a href="tel:+351928214629">+351 928 214 629</a>
+						<a class="footer-cta" href="#contact">Start a conversation <b>↗</b></a>
+					</div>
+					<div class="footer-social">
+						<p class="footer-heading">Follow along</p>
+						<p class="footer-intro-copy">Notes, experiments, and new work from the studio.</p>
+						<div class="social-links">
+							<a href="#newsletter" class="social-icon">Journal</a>
+							<a href="#contact" class="social-icon">Contact</a>
+							<a href="tel:+351928214629" class="social-icon">Call</a>
+						</div>
+					</div>
 				</div>
 
 				<div class="footer-bottom">
 					<p>© 2026 ViVia Technologies. All rights reserved.</p>
-					<p>Crafting digital excellence from Lisbon.</p>
+					<div class="footer-legal"><a href="#home">Back to top ↑</a><a href="#contact">Privacy &amp; contact</a></div>
 				</div>
 			</div>
 		</footer>
