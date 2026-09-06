@@ -3,35 +3,54 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>ViVia Blogs</title>
+	<title>ViVia Journal</title>
 	<link rel="icon" href="Media/ViVa-V-Logo.png" type="image/x-icon">
-	<style>
-		:root { color-scheme: dark; font-family: Georgia, "Times New Roman", serif; background: #080a12; color: #f8fafc; }
-		* { box-sizing: border-box; }
-		body { margin: 0; background: linear-gradient(145deg, #080a12, #17253d); }
-		main { width: min(1100px, 90%); margin: 0 auto; padding: 80px 0; }
-		a { color: #4cc9f0; }
-		.back-link { display: inline-block; margin-bottom: 60px; text-decoration: none; }
-		h1 { margin: 0 0 18px; font-size: clamp(3rem, 8vw, 6rem); }
-		.intro { max-width: 620px; color: #cbd5e1; font: 1.15rem/1.7 system-ui, sans-serif; }
-		.blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 60px; }
-		article { min-height: 240px; padding: 28px; border: 1px solid rgba(255,255,255,.12); border-radius: 18px; background: rgba(15,23,42,.72); }
-		article span { color: #f72585; font: 700 .8rem system-ui, sans-serif; letter-spacing: 1.5px; text-transform: uppercase; }
-		h2 { margin: 24px 0 12px; font-size: 1.6rem; }
-		article p { color: #cbd5e1; font: 1rem/1.6 system-ui, sans-serif; }
-		@media (max-width: 700px) { .blog-grid { grid-template-columns: 1fr; } main { padding: 45px 0; } }
-	</style>
+	<link rel="stylesheet" href="blogs/blog.css">
 </head>
-<body>
-	<main>
-		<a class="back-link" href="index.html">← Back to ViVia</a>
-		<h1>ViVia Blogs</h1>
-		<p class="intro">Explore our latest thoughts on technology, digital products, and making useful ideas available to more people.</p>
-		<section class="blog-grid" aria-label="Featured blogs">
-			<article><span>Featured blog</span><h2>Building a safer web presence</h2><p>Placeholder article coming soon.</p></article>
-			<article><span>Featured blog</span><h2>Making technology more accessible</h2><p>Placeholder article coming soon.</p></article>
-			<article><span>Featured blog</span><h2>Inside our digital toolbox</h2><p>Placeholder article coming soon.</p></article>
+<body class="journal-home">
+	<header class="journal-header">
+		<a class="brand" href="index.html" aria-label="Back to ViVia home"><img src="Media/ViVa-V-Logo.png" alt=""><span>ViVia Journal</span></a>
+		<a class="back-link" href="index.html"><span aria-hidden="true">↗</span> Back to ViVia</a>
+	</header>
+	<main class="journal-shell">
+		<section class="journal-intro">
+			<div><p class="eyebrow">Ideas in motion <span></span> 2026</p><h1>Thoughts for a<br><em>more useful</em> future.</h1><p class="intro-copy">A field journal from the people building clearer, kinder technology at ViVia.</p></div>
+			<nav class="category-nav" aria-label="Journal categories">
+				<button class="category-button is-active" type="button" data-category="featured">Featured <span>03</span></button>
+				<button class="category-button" type="button" data-category="news">News <span>03</span></button>
+				<button class="category-button" type="button" data-category="events">Events <span>03</span></button>
+				<button class="category-button" type="button" data-category="blogs">Blogs <span>03</span></button>
+			</nav>
 		</section>
+		<section class="journal-view is-visible" data-view="featured" aria-live="polite">
+			<div class="view-heading"><p class="eyebrow">Selected reading</p><h2>Featured stories</h2></div>
+			<div class="content-layout">
+				<div class="featured-grid">
+					<a class="feature-card feature-card--large" href="blogs/featured/quietly-powerful.html"><div class="card-image"><img src="Media/Background1.jpg" alt="Abstract blue light across a dark landscape"><span class="card-number">01</span></div><div class="card-copy"><p class="tag">Perspective</p><h3>The case for technology that feels quietly powerful</h3><p>Good tools do not ask for attention. They give it back.</p><span class="read-more">Read story <b>↗</b></span></div></a>
+					<a class="feature-card" href="blogs/featured/designing-for-real-life.html"><div class="card-image"><img src="Media/human1.jpg" alt="ViVia team member working"><span class="card-number">02</span></div><div class="card-copy"><p class="tag">Design</p><h3>Designing for the beautifully messy real world</h3><p>Interfaces should meet people where they are.</p><span class="read-more">Read story <b>↗</b></span></div></a>
+					<a class="feature-card" href="blogs/featured/less-friction.html"><div class="card-image"><img src="Media/human2.jpg" alt="ViVia team member smiling"><span class="card-number">03</span></div><div class="card-copy"><p class="tag">Craft</p><h3>Less friction, more possibility</h3><p>Small improvements can open surprisingly large doors.</p><span class="read-more">Read story <b>↗</b></span></div></a>
+				</div>
+				<aside class="more-column"><p class="eyebrow">From the archive</p><h2>More to explore</h2>
+					<a class="mini-story" href="blogs/news/new-chapter.html"><img src="Media/human3.jpg" alt=""><span><b>News</b><strong>A new chapter for ViVia</strong><small>04.02.26</small></span></a>
+					<a class="mini-story" href="blogs/events/open-studio.html"><img src="Media/Background.jpg" alt=""><span><b>Events</b><strong>Inside our first open studio</strong><small>28.01.26</small></span></a>
+					<a class="mini-story" href="blogs/blogs/building-in-public.html"><img src="Media/human1.jpg" alt=""><span><b>Blog</b><strong>What building in public taught us</strong><small>18.01.26</small></span></a>
+				</aside>
+			</div>
+		</section>
+		<section class="journal-view archive-view" data-view="news" aria-live="polite"><div class="view-heading"><p class="eyebrow">The latest</p><h2>News</h2></div><div class="archive-grid" data-list="news"></div></section>
+		<section class="journal-view archive-view" data-view="events" aria-live="polite"><div class="view-heading"><p class="eyebrow">Meet us there</p><h2>Events</h2></div><div class="archive-grid" data-list="events"></div></section>
+		<section class="journal-view archive-view" data-view="blogs" aria-live="polite"><div class="view-heading"><p class="eyebrow">Notes from the studio</p><h2>Blogs</h2></div><div class="archive-grid" data-list="blogs"></div></section>
 	</main>
+	<script>
+		const stories = {
+			news: [['New chapter', 'A new chapter for ViVia', 'The next stage of our work is about making useful technology feel closer to home.', 'blogs/news/new-chapter.html', 'Media/human3.jpg'], ['Product note', 'The tools we are taking with us', 'A look at the principles guiding our next generation of digital products.', 'blogs/news/tools-we-take.html', 'Media/Background1.jpg'], ['Team', 'Meet the people behind the pixels', 'The curious, practical minds making the ViVia point of view real every day.', 'blogs/news/meet-the-team.html', 'Media/human1.jpg']],
+			events: [['Open studio', 'Inside our first open studio', 'An afternoon of sketches, questions, and the ideas that only appear together.', 'blogs/events/open-studio.html', 'Media/Background.jpg'], ['Community', 'Designing for everyone, together', 'What happened when we invited our neighbours into the product conversation.', 'blogs/events/designing-together.html', 'Media/human2.jpg'], ['Recap', 'Three days at Future Forum', 'The moments and questions we are still carrying home from this year’s gathering.', 'blogs/events/future-forum.html', 'Media/Background1.jpg']],
+			blogs: [['Field notes', 'What building in public taught us', 'A few honest lessons from sharing the work before it was finished.', 'blogs/blogs/building-in-public.html', 'Media/human1.jpg'], ['How we work', 'The gentle art of a good handoff', 'Small rituals that help a growing team keep its work human.', 'blogs/blogs/good-handoff.html', 'Media/human3.jpg'], ['Perspective', 'Make room for the unfinished idea', 'Why the most useful thinking often starts out a little unclear.', 'blogs/blogs/unfinished-idea.html', 'Media/Background.jpg']]
+		};
+		const buttons = document.querySelectorAll('.category-button');
+		const views = document.querySelectorAll('.journal-view');
+		const renderArchive = (category) => { const target = document.querySelector(`[data-list="${category}"]`); if (target && !target.children.length) target.innerHTML = stories[category].map((story, index) => `<a class="archive-card" href="${story[3]}"><img src="${story[4]}" alt=""><span class="archive-index">0${index + 1}</span><div><p class="tag">${story[0]}</p><h3>${story[1]}</h3><p>${story[2]}</p><span class="read-more">Read story <b>↗</b></span></div></a>`).join(''); };
+		buttons.forEach((button) => button.addEventListener('click', () => { const category = button.dataset.category; buttons.forEach((item) => item.classList.toggle('is-active', item === button)); views.forEach((view) => view.classList.toggle('is-visible', view.dataset.view === category)); if (category !== 'featured') renderArchive(category); }));
+	</script>
 </body>
 </html>
