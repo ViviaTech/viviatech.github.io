@@ -45,5 +45,5 @@
 		document.querySelectorAll('.journal-view').forEach((view) => view.classList.toggle('is-visible', view.dataset.view === category));
 	}));
 
-	if (document.querySelector('[data-featured-grid]')) render().catch((error) => console.error('Newsletter could not load:', error));
+	if (document.querySelector('[data-featured-grid], [data-newsletter-grid]')) render().catch((error) => console.error('Newsletter could not load:', error));
 })();

@@ -1,4 +1,5 @@
 window.NEWSLETTER_ARTICLES = [
+	'newsletter/events/vivia-at-websummit.html',
 	'newsletter/blogs/quietly-powerful.html',
 	'newsletter/blogs/designing-for-real-life.html',
 	'newsletter/blogs/less-friction.html',
