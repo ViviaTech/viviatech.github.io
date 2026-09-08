@@ -3,6 +3,20 @@
 	const rootUrl = new URL('../', scriptUrl);
 	const link = (path) => new URL(path, rootUrl).pathname;
 
+	const journalBackLink = document.querySelector('.back-link[href*="blogs.html"]');
+	if (journalBackLink) {
+		const headerActions = document.createElement('nav');
+		headerActions.className = 'journal-header__actions';
+		journalBackLink.parentNode.insertBefore(headerActions, journalBackLink);
+		headerActions.appendChild(journalBackLink);
+
+		const viviaBackLink = document.createElement('a');
+		viviaBackLink.className = 'back-link back-link--vivia';
+		viviaBackLink.href = link('index.html');
+		viviaBackLink.innerHTML = '<span aria-hidden="true">↗</span> Back to ViVia';
+		headerActions.appendChild(viviaBackLink);
+	}
+
 	const footer = document.createElement('footer');
 	footer.className = 'journal-footer';
 	footer.innerHTML = `
