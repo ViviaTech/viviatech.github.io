@@ -35,7 +35,17 @@ featured: false         # featured posts appear first on the homepage
 The post, in Markdown.
 ```
 
-The cover is generated from the filename, the journal page, RSS feed, sitemap and previous/next links update themselves, and the build fails with a clear error if a field is missing.
+The journal page, RSS feed, sitemap and previous/next links update themselves, and the build fails with a clear error if a field is missing.
+
+For a cover, put the image in `src/assets/journal/` and add it to the post. Images are resized and compressed at build time, so use the best version you have.
+
+```md
+cover: ../../assets/journal/my-photo.jpg
+coverAlt: What the image shows, for people who can't see it.
+coverFit: contain       # only for logos: shows it whole, over a generated circuit
+```
+
+Without a `cover`, the post gets a circuit generated from its filename.
 
 Event posts can also set `when: 9–12 Nov 2026` and `where: Lisbon, Portugal`, which replace the date and reading time. `showTeam: true` adds the team grid to the end of a post.
 
@@ -59,4 +69,4 @@ The animated board on the homepage is a working two-layer PCB autorouter.
 
 To use one, add `<Circuit mode="calm" />` inside a `position: relative` element. The modes are `hero`, `calm`, `mini` and `broken`.
 
-Try it on the homepage: move the cursor over the board, click to fire a burst of signals, and click the stats in the corner of the hero for an x-ray of the grid, keep-outs and the cells the search explored. With reduced motion enabled, the board is drawn once and stays still.
+Try it on the homepage: move the cursor over the board to light it up, or click to fire a burst of signals. With reduced motion enabled, the board is drawn once and stays still.

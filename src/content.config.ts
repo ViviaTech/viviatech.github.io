@@ -4,7 +4,7 @@ import { z } from 'astro/zod';
 
 const journal = defineCollection({
   loader: glob({ base: './src/content/journal', pattern: '**/*.md' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
     category: z.enum(['news', 'events', 'essays']),
@@ -18,6 +18,14 @@ const journal = defineCollection({
     where: z.string().optional(),
     /** Adds the team grid to the end of the post. */
     showTeam: z.boolean().default(false),
+    /** Cover image, relative to the post. Without one, a circuit is generated. */
+    cover: image().optional(),
+    coverAlt: z.string().optional(),
+    /** `cover` fills the frame. `contain` shows a logo whole, over a circuit. */
+    coverFit: z.enum(['cover', 'contain']).default('cover'),
+  }).refine((post) => !post.cover || post.coverAlt, {
+    message: 'A post with a cover also needs coverAlt.',
+    path: ['coverAlt'],
   }),
 });
 

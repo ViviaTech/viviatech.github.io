@@ -4,6 +4,8 @@ description: The curious, practical minds making the ViVia point of view real ev
 category: news
 label: Team
 date: 2026-01-24
+cover: ../../assets/journal/rodrigo-wide.jpg
+coverAlt: Portrait of Rodrigo Lima
 ---
 
 Every polished screen is the visible end of a much more human process: questions, sketches, conversations, experiments, and people willing to look at a problem one more time.

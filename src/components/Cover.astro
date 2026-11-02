@@ -5,10 +5,12 @@ import { uid } from '../lib/uid';
 interface Props {
   slug: string;
   class?: string;
+  /** Leaves the middle clear for a logo placed on top. */
+  behindLogo?: boolean;
 }
 
-const { slug, class: className } = Astro.props;
-const cover = generateCover(slug);
+const { slug, class: className, behindLogo = false } = Astro.props;
+const cover = generateCover(slug, behindLogo);
 const stroke = uid('cover');
 const glow = uid('glow');
 ---
@@ -38,8 +40,14 @@ const glow = uid('glow');
   <path d={cover.top} fill="none" stroke={`url(#${stroke})`} stroke-width="2" stroke-linejoin="round" opacity=".8"></path>
   <path d={cover.vias} fill="#090c15" stroke={`url(#${stroke})`} stroke-width="2"></path>
   <path d={cover.pads} fill={`url(#${stroke})`}></path>
-  <circle cx={cover.focus.x} cy={cover.focus.y} r="88" fill="#0b0f1a" stroke={`url(#${stroke})`} stroke-width="5"></circle>
-  <circle cx={cover.focus.x} cy={cover.focus.y} r="62" fill="none" stroke={`url(#${stroke})`} stroke-width="2" opacity=".45"></circle>
+  {
+    !behindLogo && (
+      <>
+        <circle cx={cover.focus.x} cy={cover.focus.y} r="88" fill="#0b0f1a" stroke={`url(#${stroke})`} stroke-width="5" />
+        <circle cx={cover.focus.x} cy={cover.focus.y} r="62" fill="none" stroke={`url(#${stroke})`} stroke-width="2" opacity=".45" />
+      </>
+    )
+  }
 </svg>
 
 <style>

@@ -1,7 +1,7 @@
 ---
 import { CATEGORIES } from '../lib/site';
 import { formatDate, postUrl, type Post } from '../lib/journal';
-import Cover from './Cover.astro';
+import PostCover from './PostCover.astro';
 
 interface Props {
   post: Post;
@@ -13,7 +13,9 @@ const { title, description, category, date, when } = post.data;
 
 <article class="post card spot" data-category={category}>
   <a href={postUrl(post)}>
-    <div class="post__cover"><Cover slug={post.id} /></div>
+    <div class="post__cover">
+      <PostCover post={post} widths={[480, 800]} sizes="(max-width: 620px) 100vw, (max-width: 960px) 50vw, 400px" />
+    </div>
     <div class="post__body">
       <p class="post__meta">
         <span>{CATEGORIES[category]}</span>
@@ -38,11 +40,13 @@ const { title, description, category, date, when } = post.data;
     border-bottom: 1px solid var(--line);
   }
 
-  .post__cover :global(svg) {
+  .post__cover :global(.cover),
+  .post__cover :global(.post-cover__photo) {
     transition: transform 0.8s var(--ease);
   }
 
-  .post:hover .post__cover :global(svg) {
+  .post:hover .post__cover :global(.cover),
+  .post:hover .post__cover :global(.post-cover__photo) {
     transform: scale(1.04);
   }
 

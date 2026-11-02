@@ -4,6 +4,8 @@ description: Why the most useful thinking often starts out a little unclear.
 category: essays
 label: Perspective
 date: 2026-01-05
+cover: ../../assets/journal/glowing-curves.jpg
+coverAlt: Glowing blue curves on a dark background
 ---
 
 Some ideas arrive polished. The important ones usually arrive with edges missing. They need a little space before they can tell us what they are trying to become.

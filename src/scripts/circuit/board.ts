@@ -192,7 +192,6 @@ export class Board {
   private readonly still: boolean;
   private readonly sprites = makeSprites();
   private readonly target: HTMLElement | null;
-  private readonly telemetry: HTMLElement | null;
   private readonly seed = Math.floor(Math.random() * 2 ** 32);
 
   private width = 0;
@@ -204,7 +203,6 @@ export class Board {
   private bright!: HTMLCanvasElement;
   private dimCtx!: CanvasRenderingContext2D;
   private brightCtx!: CanvasRenderingContext2D;
-  private xray: HTMLCanvasElement | null = null;
   private reveal!: HTMLCanvasElement;
   private revealMask!: HTMLCanvasElement;
 
@@ -214,7 +212,6 @@ export class Board {
   private pulses: Pulse[] = [];
   private flashes: Flash[] = [];
   private animated = false;
-  private routeMs = 0;
   /** Where the intro spreads from: the target, or the middle of the board. */
   private origin: Point = { x: 0, y: 0 };
 
@@ -224,10 +221,8 @@ export class Board {
   private chargeGoal = 0;
   private charge = 0;
   private shownCharge = -1;
-  private nextHud = 0;
   private pointer: Point | null = null;
   private pointerStrength = 0;
-  private xrayOn = false;
 
   constructor(canvas: HTMLCanvasElement, still: boolean) {
     this.canvas = canvas;
@@ -237,9 +232,7 @@ export class Board {
     this.tuning = TUNING[this.mode];
     this.ctx = canvas.getContext('2d')!;
     this.target = this.zone.querySelector('[data-circuit-target]');
-    this.telemetry = this.zone.querySelector('[data-telemetry]');
 
-    this.telemetry?.addEventListener('click', () => this.toggleXray());
     if (!still) {
       this.zone.addEventListener('pointermove', this.onPointerMove, { passive: true });
       this.zone.addEventListener('pointerleave', this.onPointerLeave, { passive: true });
@@ -269,7 +262,6 @@ export class Board {
     };
     [this.dim, this.dimCtx] = makeTraceLayer();
     [this.bright, this.brightCtx] = makeTraceLayer();
-    this.xray = null;
 
     const revealSize = Math.round(REVEAL_RADIUS * 2 * this.dpr);
     this.reveal = makeLayer(revealSize, revealSize);
@@ -279,13 +271,12 @@ export class Board {
     this.pitch = Math.round(clamp(this.width / 60, minPitch, maxPitch));
     const cols = Math.ceil(this.width / this.pitch) + 1;
     const rows = Math.ceil(this.height / this.pitch) + 1;
-    this.router = new Router({ cols, rows, recordVisits: true });
+    this.router = new Router({ cols, rows });
 
     this.traces = [];
     this.growing = [];
     this.pulses = [];
     this.flashes = [];
-    this.routeMs = 0;
     this.animated = animate && !this.still;
     this.origin = { x: this.width / 2, y: this.height / 2 };
 
@@ -302,7 +293,6 @@ export class Board {
       this.routeNext(Infinity);
       this.draw(0);
     }
-    this.renderHud(true);
   }
 
   /** Advance one animation frame. */
@@ -318,10 +308,6 @@ export class Board {
     this.update(dt / 1000);
     this.draw(dt / 1000);
     this.adapt();
-    if (now > this.nextHud) {
-      this.nextHud = now + 500;
-      this.renderHud();
-    }
   }
 
   private blockKeepouts(box: DOMRect) {
@@ -422,9 +408,7 @@ export class Board {
     const started = performance.now();
     while (this.queue.length > 0 && performance.now() - started < budgetMs) {
       const net = this.queue.shift()!;
-      const before = performance.now();
       const cells = this.router.route(net.from, net.to);
-      this.routeMs += performance.now() - before;
       if (cells) {
         const trace = this.makeTrace(cells, net);
         this.traces.push(trace);
@@ -659,7 +643,6 @@ export class Board {
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    if (this.xrayOn && this.xray) ctx.drawImage(this.xray, 0, 0, width, height);
     if (!this.still && dt > 0) this.drawSignals();
   }
 
@@ -766,56 +749,6 @@ export class Board {
       this.pulses.length = Math.floor(this.pulses.length * 0.75);
       this.slowFrames = 0;
     }
-  }
-
-  private renderHud(force = false) {
-    const { telemetry } = this;
-    if (!telemetry) return;
-    const set = (key: string, value: string) => {
-      const element = telemetry.querySelector(`[data-t="${key}"]`);
-      if (element) element.textContent = value;
-    };
-    set('nets', String(this.traces.length));
-    set('ms', `${this.routeMs.toFixed(1)} ms`);
-    if (this.still) set('fps', 'static');
-    else if (!force) set('fps', String(Math.round(1000 / this.frameMs)));
-  }
-
-  private toggleXray() {
-    this.xrayOn = !this.xrayOn;
-    this.telemetry?.setAttribute('aria-pressed', String(this.xrayOn));
-    if (this.xrayOn && !this.xray) this.xray = this.makeXray();
-    if (this.still) this.draw(0);
-  }
-
-  /** Grid, keep-outs and every cell the search explored. */
-  private makeXray() {
-    const { pitch, router, dpr } = this;
-    const layer = makeLayer(this.canvas.width, this.canvas.height);
-    const ctx = layer.getContext('2d')!;
-    ctx.scale(dpr, dpr);
-
-    const heat = new Uint16Array(router.cols * router.rows);
-    let hottest = 1;
-    for (const cell of router.visits) hottest = Math.max(hottest, ++heat[cell]);
-
-    for (let y = 0; y < router.rows; y++) {
-      for (let x = 0; x < router.cols; x++) {
-        const cell = y * router.cols + x;
-        const px = x * pitch;
-        const py = y * pitch;
-        if (router.grid[cell] & 4) {
-          ctx.fillStyle = 'rgba(245,110,219,.1)';
-          ctx.fillRect(px - pitch / 2, py - pitch / 2, pitch, pitch);
-        } else if (heat[cell] > 0) {
-          ctx.fillStyle = `rgba(42,140,255,${0.05 + 0.3 * Math.sqrt(heat[cell] / hottest)})`;
-          ctx.fillRect(px - pitch / 2 + 1, py - pitch / 2 + 1, pitch - 2, pitch - 2);
-        }
-        ctx.fillStyle = 'rgba(255,255,255,.22)';
-        ctx.fillRect(px - 0.75, py - 0.75, 1.5, 1.5);
-      }
-    }
-    return layer;
   }
 
   private onPointerMove = (event: PointerEvent) => {

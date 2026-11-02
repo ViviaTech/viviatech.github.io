@@ -4,6 +4,8 @@ description: A look at the principles guiding our next generation of digital pro
 category: news
 label: Product note
 date: 2026-01-30
+cover: ../../assets/journal/geometric-detail.jpg
+coverAlt: Close-up of glowing purple geometric shapes and a planet
 ---
 
 Tools change quickly. Principles should be a little more durable. As we plan the next wave of ViVia products, we keep returning to three ideas: make it clear, make it flexible, and make it matter.

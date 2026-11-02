@@ -41,8 +41,6 @@ export interface RouterOptions {
   greed?: number;
   /** Search limit per net, so one impossible net can't stall a frame. */
   maxExpansions?: number;
-  /** Keep the cells each search explored, for the x-ray view. */
-  recordVisits?: boolean;
 }
 
 export type Random = () => number;
@@ -118,9 +116,6 @@ export class Router {
   readonly rows: number;
   /** Bit flags per grid point: a trace on each layer, or a keep-out. */
   readonly grid: Uint8Array;
-  /** Cells explored across all searches, when recordVisits is on. */
-  readonly visits: number[] = [];
-  expansions = 0;
 
   private readonly diagonals: Uint8Array;
   private readonly cost: Float32Array;
@@ -134,7 +129,6 @@ export class Router {
   private readonly bottomCost: number;
   private readonly greed: number;
   private readonly maxExpansions: number;
-  private readonly recordVisits: boolean;
   private search = 0;
 
   constructor(options: RouterOptions) {
@@ -147,7 +141,6 @@ export class Router {
     this.bottomCost = options.bottomCost ?? 1.1;
     this.greed = options.greed ?? 1.15;
     this.maxExpansions = options.maxExpansions ?? 40000;
-    this.recordVisits = options.recordVisits ?? false;
 
     const cells = cols * rows;
     const states = cells * 16;
@@ -229,7 +222,6 @@ export class Router {
       const state = heap.pop();
       if (closed[state] === search) continue;
       closed[state] = search;
-      this.expansions++;
 
       const cell = state >> 4;
       if (cell === goal) {
@@ -241,7 +233,6 @@ export class Router {
       const layer = state & 1;
       const x = cell % cols;
       const y = (cell - x) / cols;
-      if (this.recordVisits) this.visits.push(cell);
 
       for (const turn of TURNS) {
         const next = (heading + turn) & 7;

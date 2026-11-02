@@ -1,6 +1,6 @@
 ---
 import { render } from 'astro:content';
-import Cover from '../../components/Cover.astro';
+import PostCover from '../../components/PostCover.astro';
 import Team from '../../components/Team.astro';
 import Base from '../../layouts/Base.astro';
 import { formatDate, getPosts, postUrl, readingTime, type Post } from '../../lib/journal';
@@ -42,7 +42,9 @@ const { Content } = await render(post);
     </header>
 
     <div class="container article__cover">
-      <div><Cover slug={post.id} /></div>
+      <div>
+        <PostCover post={post} lead widths={[800, 1200, 1600]} sizes="(max-width: 1100px) 100vw, 1088px" />
+      </div>
     </div>
 
     <div class="container">

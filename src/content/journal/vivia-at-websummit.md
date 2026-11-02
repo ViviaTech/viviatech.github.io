@@ -8,6 +8,9 @@ featured: true
 when: 9–12 Nov 2026
 where: Lisbon, Portugal
 showTeam: true
+cover: ../../assets/journal/websummit.png
+coverAlt: Web Summit Lisbon logo
+coverFit: contain
 ---
 
 We are excited to share that ViVia Technologies will be attending Web Summit Lisbon this November. The event brings together founders, builders, investors, and curious minds from around the world, and it feels like the right place to talk about the kind of technology we want to help make: useful, accessible, and genuinely human.

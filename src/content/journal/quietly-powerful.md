@@ -5,6 +5,8 @@ category: essays
 label: Perspective
 date: 2026-02-04
 featured: true
+cover: ../../assets/journal/geometric-shapes.jpg
+coverAlt: Glowing purple and pink geometric shapes against a starfield
 ---
 
 The best technology often disappears into the day. It clears a path, answers a question, or removes one small point of friction without asking to be admired for it.

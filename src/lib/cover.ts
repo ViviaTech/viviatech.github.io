@@ -12,19 +12,19 @@ const dot = (x: number, y: number, r: number) =>
 
 /**
  * A unique board for each post, generated from its slug by the same router that
- * drives the homepage. Runs at build time, so covers cost no JavaScript.
+ * drives the homepage. Runs at build time, so covers cost no JavaScript. With
+ * `behindLogo`, the board clears the middle and routes around a logo placed there.
  */
-export function generateCover(slug: string) {
+export function generateCover(slug: string, behindLogo = false) {
   const random = createRandom(hashSeed(slug));
   const cols = WIDTH / PITCH + 1;
   const rows = HEIGHT / PITCH + 1;
   const router = new Router({ cols, rows, hug: 0.72 });
 
-  const focus = {
-    x: Math.round(cols * (0.3 + random() * 0.4)),
-    y: Math.round(rows * (0.32 + random() * 0.36)),
-  };
-  router.blockCircle(focus.x, focus.y, 3.6);
+  const focus = behindLogo
+    ? { x: Math.round(cols / 2), y: Math.round(rows / 2) }
+    : { x: Math.round(cols * (0.3 + random() * 0.4)), y: Math.round(rows * (0.32 + random() * 0.36)) };
+  router.blockCircle(focus.x, focus.y, behindLogo ? 8.5 : 3.6);
 
   let top = '';
   let bottom = '';
