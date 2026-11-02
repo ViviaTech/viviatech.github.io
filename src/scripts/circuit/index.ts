@@ -2,12 +2,44 @@
 
 import { Board } from './board';
 
+const CHOICE_KEY = 'vivia-motion';
 const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+const toggles = document.querySelectorAll<HTMLButtonElement>('[data-motion-toggle]');
 const boards: Board[] = [];
 let frame = 0;
 
+// Storage can throw in private windows or with site data blocked.
+function savedChoice() {
+  try {
+    return localStorage.getItem(CHOICE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function saveChoice(choice: string) {
+  try {
+    localStorage.setItem(CHOICE_KEY, choice);
+  } catch {
+    // The choice just won't be remembered.
+  }
+}
+
+/**
+ * The system's reduced motion setting decides the default. Windows also turns it
+ * on for "best performance" tuning, which many gaming PCs use, so the toggle lets
+ * anyone choose for themselves, and that choice wins from then on.
+ */
+const shouldPause = () => {
+  const choice = savedChoice();
+  return choice ? choice === 'paused' : motionQuery.matches;
+};
+
+let paused = shouldPause();
+
 function tick(now: number) {
   frame = 0;
+  if (paused) return;
   let active = false;
   for (const board of boards) {
     if (!board.visible) continue;
@@ -18,14 +50,37 @@ function tick(now: number) {
 }
 
 const wake = () => {
-  if (!frame && !document.hidden && !motionQuery.matches) frame = requestAnimationFrame(tick);
+  if (!frame && !document.hidden && !paused) frame = requestAnimationFrame(tick);
 };
 
+function renderToggles() {
+  const label = paused ? 'Play animation' : 'Pause animation';
+  for (const toggle of toggles) {
+    toggle.dataset.paused = String(paused);
+    toggle.setAttribute('aria-label', label);
+    toggle.title = label;
+  }
+}
+
+function setPaused(value: boolean) {
+  paused = value;
+  for (const board of boards) board.setStill(paused);
+  renderToggles();
+  wake();
+}
+
 document.addEventListener('visibilitychange', wake);
+motionQuery.addEventListener('change', () => setPaused(shouldPause()));
+
+for (const toggle of toggles) {
+  toggle.addEventListener('click', () => {
+    saveChoice(paused ? 'playing' : 'paused');
+    setPaused(!paused);
+  });
+}
 
 function mount(canvas: HTMLCanvasElement) {
-  const still = motionQuery.matches;
-  const board = new Board(canvas, still);
+  const board = new Board(canvas, paused);
   let built = false;
 
   const observer = new IntersectionObserver(([entry]) => {
@@ -61,6 +116,9 @@ function mount(canvas: HTMLCanvasElement) {
 }
 
 function start() {
+  // Shown before mounting, so the board routes around it.
+  renderToggles();
+  for (const toggle of toggles) toggle.hidden = false;
   document.querySelectorAll<HTMLCanvasElement>('canvas[data-circuit]').forEach(mount);
 }
 

@@ -189,7 +189,7 @@ export class Board {
   private readonly mode: Mode;
   private readonly tuning: Tuning;
   private readonly ctx: CanvasRenderingContext2D;
-  private readonly still: boolean;
+  private still: boolean;
   private readonly sprites = makeSprites();
   private readonly target: HTMLElement | null;
   private readonly seed = Math.floor(Math.random() * 2 ** 32);
@@ -233,10 +233,30 @@ export class Board {
     this.ctx = canvas.getContext('2d')!;
     this.target = this.zone.querySelector('[data-circuit-target]');
 
-    if (!still) {
-      this.zone.addEventListener('pointermove', this.onPointerMove, { passive: true });
-      this.zone.addEventListener('pointerleave', this.onPointerLeave, { passive: true });
-      this.zone.addEventListener('click', this.onClick);
+    this.zone.addEventListener('pointermove', this.onPointerMove, { passive: true });
+    this.zone.addEventListener('pointerleave', this.onPointerLeave, { passive: true });
+    this.zone.addEventListener('click', this.onClick);
+  }
+
+  /** Pause or resume. A paused board is always complete, even mid-intro. */
+  setStill(still: boolean) {
+    if (still === this.still) return;
+    this.still = still;
+    this.pulses = [];
+
+    if (still) {
+      if (this.queue.length > 0) {
+        this.routeNext(Infinity);
+        if (this.animated) this.scheduleIntro();
+      }
+      this.animated = false;
+      for (const { trace } of this.growing) this.commit(trace);
+      this.growing = [];
+      this.flashes = [];
+      this.pointer = null;
+      if (this.width > 0) this.draw(0);
+    } else {
+      for (const trace of this.traces) this.addSignal(trace);
     }
   }
 
@@ -470,6 +490,10 @@ export class Board {
   private commit(trace: Trace) {
     this.paint(this.dimCtx, trace, DIM);
     this.paint(this.brightCtx, trace, BRIGHT);
+    this.addSignal(trace);
+  }
+
+  private addSignal(trace: Trace) {
     if (this.still || Math.random() > this.tuning.pulses) return;
 
     const { speed, rest } = this.tuning;
@@ -752,7 +776,7 @@ export class Board {
   }
 
   private onPointerMove = (event: PointerEvent) => {
-    if (event.pointerType !== 'mouse') return;
+    if (this.still || event.pointerType !== 'mouse') return;
     const box = this.zone.getBoundingClientRect();
     this.pointer = { x: event.clientX - box.left, y: event.clientY - box.top };
   };
@@ -763,7 +787,7 @@ export class Board {
 
   /** Click anywhere on the board to fire a burst of signals down the nearest net. */
   private onClick = (event: MouseEvent) => {
-    if (this.growing.length > 0 || (event.target as Element).closest('a, button')) return;
+    if (this.still || this.growing.length > 0 || (event.target as Element).closest('a, button')) return;
     const box = this.zone.getBoundingClientRect();
     const x = event.clientX - box.left;
     const y = event.clientY - box.top;

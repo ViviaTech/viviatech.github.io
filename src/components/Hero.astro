@@ -33,6 +33,16 @@ import Logo from './Logo.astro';
       <Logo variant="ring" />
     </div>
   </div>
+
+  <button class="motion" type="button" data-motion-toggle data-keepout hidden>
+    <svg class="motion__pause" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+      <path d="M2.5 2h2.5v8H2.5zM7 2h2.5v8H7z"></path>
+    </svg>
+    <svg class="motion__play" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+      <path d="M3 1.5v9l7.5-4.5z"></path>
+    </svg>
+    <span class="motion__label">Play animation</span>
+  </button>
 </section>
 
 <style>
@@ -223,6 +233,47 @@ import Logo from './Logo.astro';
     from {
       opacity: 0;
     }
+  }
+
+  .motion {
+    position: absolute;
+    z-index: 1;
+    right: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
+    bottom: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    padding: 0 0.75rem;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    background: rgb(5 7 13 / 0.65);
+    color: var(--text-2);
+    font-size: 0.8125rem;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .motion:hover {
+    border-color: rgb(255 255 255 / 0.32);
+    color: var(--text);
+  }
+
+  .motion svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  /* While it plays, this is a quiet icon. When paused, it says what it does. */
+  .motion[data-paused='false'] {
+    padding: 0;
+  }
+
+  .motion[data-paused='false'] .motion__play,
+  .motion[data-paused='false'] .motion__label,
+  .motion[data-paused='true'] .motion__pause {
+    display: none;
   }
 
   @media (max-width: 900px) {

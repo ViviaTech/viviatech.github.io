@@ -69,4 +69,6 @@ The animated board on the homepage is a working two-layer PCB autorouter.
 
 To use one, add `<Circuit mode="calm" />` inside a `position: relative` element. The modes are `hero`, `calm`, `mini` and `broken`.
 
-Try it on the homepage: move the cursor over the board to light it up, or click to fire a burst of signals. With reduced motion enabled, the board is drawn once and stays still.
+Try it on the homepage: move the cursor over the board to light it up, or click to fire a burst of signals.
+
+The button in the corner of the hero pauses and plays every board on the page. By default the boards follow the system's reduced motion setting and stay still when it's on. Windows also turns that setting on when animation effects are off, which is common on gaming PCs, so if the circuit looks frozen, that's why. Pressing play overrides it, and the browser remembers the choice.
