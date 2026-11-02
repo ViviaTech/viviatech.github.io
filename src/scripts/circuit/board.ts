@@ -35,7 +35,33 @@ interface Pulse {
 
 interface Growth {
   trace: Trace;
-  at: number;
+  /** Seconds since this trace started. Negative while it waits its turn. */
+  time: number;
+  duration: number;
+  /** Grow from the far end, so the board spreads away from the origin. */
+  reverse: boolean;
+}
+
+interface TraceStyle {
+  top: number;
+  bottom: number;
+  width: number;
+}
+
+interface Tuning {
+  pitch: [number, number];
+  density: number;
+  /** Share of nets that carry a signal. */
+  pulses: number;
+  /** Signal speed in px/s. Small boards need slow signals: their nets are short. */
+  speed: [number, number];
+  /** Pause between signals on a net, in seconds. */
+  rest: [number, number];
+  tail: number;
+  /** Size of a signal's glow. */
+  glow: number;
+  /** Seconds before the first trace, seconds across the wave, and growth in px/s. */
+  intro: { delay: number; spread: number; speed: number };
 }
 
 interface Flash {
@@ -58,16 +84,54 @@ const STOPS = [
 ];
 const SPRITES = 12;
 const SPRITE_SIZE = 64;
-const TAIL = 110;
 const REVEAL_RADIUS = 170;
 const ROUTE_BUDGET_MS = 4;
 const SLOW_FRAME_MS = 24;
 
-const TUNING: Record<Mode, { pitch: [number, number]; density: number; pulses: number; intro: boolean }> = {
-  hero: { pitch: [20, 34], density: 95, pulses: 1, intro: true },
-  calm: { pitch: [22, 36], density: 150, pulses: 0.5, intro: true },
-  mini: { pitch: [14, 16], density: 70, pulses: 0.8, intro: true },
-  broken: { pitch: [22, 36], density: 120, pulses: 0.8, intro: true },
+const DIM: TraceStyle = { top: 0.34, bottom: 0.14, width: 1 };
+const BRIGHT: TraceStyle = { top: 0.95, bottom: 0.7, width: 1.4 };
+
+const TUNING: Record<Mode, Tuning> = {
+  hero: {
+    pitch: [20, 34],
+    density: 95,
+    pulses: 1,
+    speed: [150, 340],
+    rest: [0.4, 3],
+    tail: 110,
+    glow: 30,
+    intro: { delay: 1.3, spread: 2.2, speed: 360 },
+  },
+  calm: {
+    pitch: [22, 36],
+    density: 150,
+    pulses: 0.5,
+    speed: [150, 340],
+    rest: [0.4, 3],
+    tail: 110,
+    glow: 30,
+    intro: { delay: 0.1, spread: 1.8, speed: 340 },
+  },
+  mini: {
+    pitch: [14, 16],
+    density: 70,
+    pulses: 0.6,
+    speed: [28, 56],
+    rest: [1.5, 5],
+    tail: 42,
+    glow: 16,
+    intro: { delay: 0.2, spread: 1.4, speed: 110 },
+  },
+  broken: {
+    pitch: [22, 36],
+    density: 120,
+    pulses: 0.8,
+    speed: [150, 340],
+    rest: [0.4, 3],
+    tail: 110,
+    glow: 30,
+    intro: { delay: 0.1, spread: 1.8, speed: 340 },
+  },
 };
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
@@ -123,7 +187,7 @@ export class Board {
   private readonly canvas: HTMLCanvasElement;
   private readonly zone: HTMLElement;
   private readonly mode: Mode;
-  private readonly tuning: (typeof TUNING)[Mode];
+  private readonly tuning: Tuning;
   private readonly ctx: CanvasRenderingContext2D;
   private readonly still: boolean;
   private readonly sprites = makeSprites();
@@ -151,11 +215,13 @@ export class Board {
   private flashes: Flash[] = [];
   private animated = false;
   private routeMs = 0;
-  private lastRouteAt = 0;
+  /** Where the intro spreads from: the target, or the middle of the board. */
+  private origin: Point = { x: 0, y: 0 };
 
   private last = 0;
   private frameMs = 16;
   private slowFrames = 0;
+  private chargeGoal = 0;
   private charge = 0;
   private shownCharge = -1;
   private nextHud = 0;
@@ -220,7 +286,8 @@ export class Board {
     this.pulses = [];
     this.flashes = [];
     this.routeMs = 0;
-    this.animated = animate && !this.still && this.tuning.intro;
+    this.animated = animate && !this.still;
+    this.origin = { x: this.width / 2, y: this.height / 2 };
 
     this.blockKeepouts(box);
     const random = createRandom(this.seed);
@@ -244,7 +311,10 @@ export class Board {
     this.last = now;
     if (dt > 0) this.frameMs += (dt - this.frameMs) * 0.08;
 
-    if (this.queue.length > 0) this.routeNext(ROUTE_BUDGET_MS, now);
+    if (this.queue.length > 0) {
+      this.routeNext(ROUTE_BUDGET_MS);
+      if (this.queue.length === 0 && this.animated) this.scheduleIntro();
+    }
     this.update(dt / 1000);
     this.draw(dt / 1000);
     this.adapt();
@@ -282,6 +352,7 @@ export class Board {
     const cx = rect.left - box.left + rect.width / 2;
     const cy = rect.top - box.top + rect.height / 2;
     const radius = rect.width / 2;
+    this.origin = { x: cx, y: cy };
     router.blockCircle(cx / pitch, cy / pitch, (radius + pitch * 0.5) / pitch);
 
     const gaps = (this.target.dataset.gaps ?? '0,90,180,270').split(',').map(Number);
@@ -347,11 +418,7 @@ export class Board {
   }
 
   /** Route queued nets until the time budget runs out. */
-  private routeNext(budgetMs: number, now = 0) {
-    // During the intro, start nets a beat apart so the board visibly builds.
-    if (this.animated && now - this.lastRouteAt < 34) return;
-    this.lastRouteAt = now;
-
+  private routeNext(budgetMs: number) {
     const started = performance.now();
     while (this.queue.length > 0 && performance.now() - started < budgetMs) {
       const net = this.queue.shift()!;
@@ -361,13 +428,34 @@ export class Board {
       if (cells) {
         const trace = this.makeTrace(cells, net);
         this.traces.push(trace);
-        if (this.animated) {
-          this.growing.push({ trace, at: 0 });
-          return;
-        }
-        this.commit(trace);
+        if (!this.animated) this.commit(trace);
       }
     }
+  }
+
+  /**
+   * The board grows outward from the origin in one slow wave. Each trace starts
+   * at its end nearest the origin, in order of distance, which gives the eye one
+   * movement to follow instead of dozens starting at once.
+   */
+  private scheduleIntro() {
+    const { origin } = this;
+    const { delay, spread, speed } = this.tuning.intro;
+    const distance = (p: Point) => Math.hypot(p.x - origin.x, p.y - origin.y);
+
+    const starts = this.traces.map((trace) => {
+      const first = distance(trace.points[0]);
+      const last = distance(trace.points[trace.points.length - 1]);
+      return { trace, reverse: last < first, near: Math.min(first, last) };
+    });
+    const farthest = Math.max(1, ...starts.map(({ near }) => near));
+
+    this.growing = starts.map(({ trace, reverse, near }) => ({
+      trace,
+      reverse,
+      time: -(delay + (near / farthest) * spread + Math.random() * 0.25),
+      duration: clamp(trace.length / speed, 0.9, 2.6),
+    }));
   }
 
   private makeTrace(cells: NetCell[], net: PlannedNet): Trace {
@@ -396,40 +484,64 @@ export class Board {
 
   /** Bake a finished trace into the static layers and give it signals. */
   private commit(trace: Trace) {
-    this.bake(this.dimCtx, trace, 0.34, 0.14, 1);
-    this.bake(this.brightCtx, trace, 0.95, 0.7, 1.4);
+    this.paint(this.dimCtx, trace, DIM);
+    this.paint(this.brightCtx, trace, BRIGHT);
     if (this.still || Math.random() > this.tuning.pulses) return;
+
+    const { speed, rest } = this.tuning;
     this.pulses.push({
       trace,
       at: 0,
-      speed: 150 + Math.random() * 190,
-      wait: Math.random() * 3,
+      speed: speed[0] + Math.random() * (speed[1] - speed[0]),
+      // The first signals arrive gradually, after the board has settled.
+      wait: 0.8 + Math.random() * rest[1] * 1.5,
       once: false,
     });
   }
 
-  private bake(ctx: CanvasRenderingContext2D, trace: Trace, top: number, bottom: number, width: number) {
-    const { points, layers, colour } = trace;
+  /**
+   * Draw a trace, or the stretch of it between two distances. The growing intro
+   * uses this too, so a trace looks identical before and after it's baked and
+   * nothing visibly changes the moment it finishes.
+   */
+  private paint(
+    ctx: CanvasRenderingContext2D,
+    trace: Trace,
+    { top, bottom, width }: TraceStyle,
+    from = 0,
+    to = trace.length,
+  ) {
+    const { points, layers, lengths, colour } = trace;
     ctx.strokeStyle = colour;
     ctx.fillStyle = colour;
     ctx.lineWidth = width;
 
     for (let i = 0; i < points.length - 1; i++) {
-      const j = i + 1;
-      if (points[i].x === points[j].x && points[i].y === points[j].y) continue;
+      const start = Math.max(from, lengths[i]);
+      const end = Math.min(to, lengths[i + 1]);
+      if (end <= start) continue;
+
+      const span = lengths[i + 1] - lengths[i];
+      const a = (start - lengths[i]) / span;
+      const b = (end - lengths[i]) / span;
+      const dx = points[i + 1].x - points[i].x;
+      const dy = points[i + 1].y - points[i].y;
+
       ctx.globalAlpha = layers[i] === 0 ? top : bottom;
       ctx.setLineDash(layers[i] === 0 ? [] : [3, 5]);
+      ctx.lineDashOffset = start - lengths[i];
       ctx.beginPath();
-      ctx.moveTo(points[i].x, points[i].y);
-      ctx.lineTo(points[j].x, points[j].y);
+      ctx.moveTo(points[i].x + dx * a, points[i].y + dy * a);
+      ctx.lineTo(points[i].x + dx * b, points[i].y + dy * b);
       ctx.stroke();
     }
     ctx.setLineDash([]);
+    ctx.lineDashOffset = 0;
 
     // Vias: a ring where a net changes layer.
     ctx.globalAlpha = top;
     for (let i = 1; i < points.length; i++) {
-      if (layers[i] !== layers[i - 1]) {
+      if (layers[i] !== layers[i - 1] && lengths[i] >= from && lengths[i] <= to) {
         ctx.beginPath();
         ctx.arc(points[i].x, points[i].y, 3.2, 0, Math.PI * 2);
         ctx.stroke();
@@ -437,7 +549,7 @@ export class Board {
     }
 
     // A pad where the net ends, unless it runs into the target.
-    if (!trace.feeds) {
+    if (!trace.feeds && to >= trace.length) {
       const end = points[points.length - 1];
       ctx.beginPath();
       ctx.arc(end.x, end.y, 2.6, 0, Math.PI * 2);
@@ -449,8 +561,8 @@ export class Board {
   private update(dt: number) {
     for (let i = this.growing.length - 1; i >= 0; i--) {
       const growth = this.growing[i];
-      growth.at += dt * 1500;
-      if (growth.at >= growth.trace.length) {
+      growth.time += dt;
+      if (growth.time >= growth.duration) {
         this.commit(growth.trace);
         this.growing.splice(i, 1);
       }
@@ -463,14 +575,15 @@ export class Board {
         continue;
       }
       pulse.at += pulse.speed * dt;
-      if (pulse.at < pulse.trace.stop + (pulse.trace.stop < pulse.trace.length ? 0 : TAIL)) continue;
+      const { tail, rest } = this.tuning;
+      if (pulse.at < pulse.trace.stop + (pulse.trace.stop < pulse.trace.length ? 0 : tail)) continue;
 
       this.arrive(pulse);
       if (pulse.once) {
         this.pulses.splice(i, 1);
       } else {
         pulse.at = 0;
-        pulse.wait = 0.4 + Math.random() * 2.6;
+        pulse.wait = rest[0] + Math.random() * (rest[1] - rest[0]);
       }
     }
 
@@ -485,8 +598,11 @@ export class Board {
     }
 
     if (this.target) {
-      this.charge *= Math.exp(-dt * 1.1);
-      if (Math.abs(this.charge - this.shownCharge) > 0.008) {
+      // Signals raise a goal and the glow eases towards it, so it swells and
+      // settles instead of blinking with every arrival.
+      this.chargeGoal *= Math.exp(-dt * 0.8);
+      this.charge += (this.chargeGoal - this.charge) * (1 - Math.exp(-dt * 2.2));
+      if (Math.abs(this.charge - this.shownCharge) > 0.004) {
         this.shownCharge = this.charge;
         this.target.style.setProperty('--charge', this.charge.toFixed(3));
       }
@@ -502,7 +618,7 @@ export class Board {
       sprite: this.mode === 'broken' ? SPRITES - 1 : Math.round(trace.tone * (SPRITES - 1)),
       life: 1,
     });
-    if (trace.feeds) this.charge = Math.min(1, this.charge + 0.16);
+    if (trace.feeds) this.chargeGoal = Math.min(1, this.chargeGoal + 0.1);
   }
 
   private pointAlong(trace: Trace, at: number): Point {
@@ -540,28 +656,57 @@ export class Board {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
     ctx.drawImage(this.dim, 0, 0, width, height);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
 
     if (this.xrayOn && this.xray) ctx.drawImage(this.xray, 0, 0, width, height);
     if (!this.still && dt > 0) this.drawSignals();
   }
 
+  /** Where a growing trace has reached. Eased, so it starts and stops softly. */
+  private growthSpan({ trace, time, duration, reverse }: Growth) {
+    const eased = 0.5 - 0.5 * Math.cos(Math.PI * (time / duration));
+    const reach = trace.length * eased;
+    return reverse
+      ? { from: trace.length - reach, to: trace.length, head: trace.length - reach }
+      : { from: 0, to: reach, head: reach };
+  }
+
   private drawSignals() {
-    const { ctx } = this;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+    const { ctx, tuning } = this;
+
+    for (const growth of this.growing) {
+      if (growth.time <= 0) continue;
+      const { from, to } = this.growthSpan(growth);
+      this.paint(ctx, growth.trace, DIM, from, to);
+    }
+
     if (this.pointer && this.pointerStrength > 0) this.drawReveal();
 
     ctx.globalCompositeOperation = 'lighter';
 
-    for (const { trace, at } of this.growing) {
+    // A soft point of light leads each growing trace, fading in and out with it.
+    for (const growth of this.growing) {
+      if (growth.time <= 0) continue;
+      const { trace, reverse } = growth;
+      const { head } = this.growthSpan(growth);
+      const progress = growth.time / growth.duration;
+      const presence = Math.min(1, progress * 6, (1 - progress) * 6);
+      const lead = tuning.tail * 0.7;
+
       ctx.strokeStyle = trace.colour;
       ctx.lineWidth = 1.4;
-      ctx.globalAlpha = 0.9;
-      this.strokeSpan(trace, 0, at);
-      const head = this.pointAlong(trace, at);
-      this.drawSprite(Math.round(trace.tone * (SPRITES - 1)), head.x, head.y, 26, 0.9);
+      ctx.globalAlpha = 0.32 * presence;
+      this.strokeSpan(
+        trace,
+        reverse ? head : Math.max(0, head - lead),
+        reverse ? Math.min(trace.length, head + lead) : head,
+      );
+      const p = this.pointAlong(trace, head);
+      this.drawSprite(Math.round(trace.tone * (SPRITES - 1)), p.x, p.y, tuning.glow * 0.6, 0.6 * presence);
     }
 
+    const { tail, glow } = tuning;
     for (const pulse of this.pulses) {
       if (pulse.wait > 0) continue;
       const { trace, at } = pulse;
@@ -569,20 +714,20 @@ export class Board {
       ctx.strokeStyle = trace.colour;
       ctx.lineWidth = 1.6;
       ctx.globalAlpha = 0.16;
-      this.strokeSpan(trace, Math.max(0, at - TAIL), head);
+      this.strokeSpan(trace, Math.max(0, at - tail), head);
       ctx.globalAlpha = 0.34;
-      this.strokeSpan(trace, Math.max(0, at - TAIL * 0.6), head);
+      this.strokeSpan(trace, Math.max(0, at - tail * 0.6), head);
       ctx.lineWidth = 2;
       ctx.globalAlpha = 0.75;
-      this.strokeSpan(trace, Math.max(0, at - TAIL * 0.25), head);
+      this.strokeSpan(trace, Math.max(0, at - tail * 0.25), head);
       if (at <= trace.stop) {
         const p = this.pointAlong(trace, at);
-        this.drawSprite(Math.round(trace.tone * (SPRITES - 1)), p.x, p.y, 30, 1);
+        this.drawSprite(Math.round(trace.tone * (SPRITES - 1)), p.x, p.y, glow, 1);
       }
     }
 
     for (const flash of this.flashes) {
-      this.drawSprite(flash.sprite, flash.x, flash.y, 26 + (1 - flash.life) * 34, flash.life);
+      this.drawSprite(flash.sprite, flash.x, flash.y, glow * (0.87 + (1 - flash.life) * 1.13), flash.life);
     }
 
     ctx.globalAlpha = 1;
@@ -685,7 +830,7 @@ export class Board {
 
   /** Click anywhere on the board to fire a burst of signals down the nearest net. */
   private onClick = (event: MouseEvent) => {
-    if ((event.target as Element).closest('a, button')) return;
+    if (this.growing.length > 0 || (event.target as Element).closest('a, button')) return;
     const box = this.zone.getBoundingClientRect();
     const x = event.clientX - box.left;
     const y = event.clientY - box.top;
@@ -708,7 +853,8 @@ export class Board {
     }
     if (!nearest) return;
     for (let i = 0; i < 3; i++) {
-      this.pulses.push({ trace: nearest.trace, at: nearest.at, speed: 620, wait: i * 0.09, once: true });
+      const speed = this.tuning.speed[1] * 1.8;
+      this.pulses.push({ trace: nearest.trace, at: nearest.at, speed, wait: i * 0.09, once: true });
     }
   };
 }

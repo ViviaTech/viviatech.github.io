@@ -162,28 +162,75 @@ import Logo from './Logo.astro';
     height: auto;
   }
 
-  .mark :global(.ring__arc),
-  .mark :global(.ring__band) {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-    animation: draw 1.5s var(--ease) 0.15s forwards;
+  /*
+    One sequence: the band draws down both sides from the top, the outer arcs
+    follow in the same order, the V settles in, and then the board spreads out
+    from the ring (see intro in board.ts). The fills are `backwards` only, so the
+    logo's resting state is simply solid.
+  */
+  @media (prefers-reduced-motion: no-preference) {
+    .mark::before {
+      animation: fade-in 3s ease 0.8s backwards;
+    }
+
+    .mark :global(.ring__core) {
+      animation: fade-in 1.6s ease 0.2s backwards;
+    }
+
+    .mark :global(.ring__band) {
+      animation: trace-in 2.6s var(--ease-soft) 0.2s backwards;
+    }
+
+    .mark :global(.ring__arc) {
+      animation: trace-in 2s var(--ease-soft) 1.1s backwards;
+    }
+
+    .mark :global(.ring__arc:nth-child(3)),
+    .mark :global(.ring__arc:nth-child(5)) {
+      animation-delay: 1.3s;
+    }
+
+    .mark :global(.ring__arc:nth-child(1)),
+    .mark :global(.ring__arc:nth-child(2)) {
+      animation-delay: 1.5s;
+    }
+
+    .mark :global(.ring__v) {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: settle-in 1.6s ease-out 1.7s backwards;
+    }
   }
 
-  .mark :global(.ring__arc) {
-    animation-delay: 0.5s;
+  /* From a point at the middle of the stroke, out to both ends. */
+  @keyframes trace-in {
+    from {
+      opacity: 0;
+      stroke-dasharray: 0 1;
+      stroke-dashoffset: -0.5;
+    }
+
+    15% {
+      opacity: 1;
+    }
+
+    to {
+      stroke-dasharray: 1 0;
+      stroke-dashoffset: 0;
+    }
   }
 
-  .mark :global(.ring__v) {
-    opacity: 0;
-    animation: appear 0.9s ease 0.9s forwards;
+  @keyframes settle-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
   }
 
-  @keyframes draw {
-    to { stroke-dashoffset: 0; }
-  }
-
-  @keyframes appear {
-    to { opacity: 1; }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
   }
 
   .telemetry {

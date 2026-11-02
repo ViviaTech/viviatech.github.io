@@ -19,6 +19,9 @@ const polar = (deg: number, r: number) => {
   const a = (deg * Math.PI) / 180;
   return `${(r * Math.cos(a)).toFixed(1)} ${(r * Math.sin(a)).toFixed(1)}`;
 };
+const BAND_R = 297;
+// Starts at the bottom so the top is the midpoint: the intro draws out from there.
+const band = `M0 ${BAND_R}A${BAND_R} ${BAND_R} 0 1 1 0 ${-BAND_R}A${BAND_R} ${BAND_R} 0 1 1 0 ${BAND_R}Z`;
 const arcs = GAP_CENTRES.map((gap) => {
   const from = gap + HALF_GAP;
   const to = gap + 72 - HALF_GAP;
@@ -61,9 +64,11 @@ const arcs = GAP_CENTRES.map((gap) => {
       <g fill="none" stroke={`url(#${id})`} stroke-width="17">
         {arcs.map((d) => <path class="ring__arc" d={d} pathLength="1" />)}
       </g>
-      <circle class="ring__band" r="297" fill="none" stroke={`url(#${id})`} stroke-width="33" pathLength="1" />
-      <g class="ring__v" transform="translate(-156 -146)">
-        {V.map((points) => <polygon points={points} fill={`url(#${id}-v)`} />)}
+      <path class="ring__band" d={band} fill="none" stroke={`url(#${id})`} stroke-width="33" pathLength="1" />
+      <g class="ring__v">
+        <g transform="translate(-156 -146)">
+          {V.map((points) => <polygon points={points} fill={`url(#${id}-v)`} />)}
+        </g>
       </g>
     </svg>
   )
