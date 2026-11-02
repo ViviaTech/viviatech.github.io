@@ -1,0 +1,30 @@
+---
+import { uid } from '../lib/uid';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const id = uid('wordmark');
+
+// Traced from the original wordmark PNG.
+const SHAPES = [
+  'M4 3h36l23 58H26z',
+  'M152 3h35l-73 189H78L39 94h37l20 49z',
+  'M195 9h32v35h-32z',
+  'M195 87h32v105h-32z',
+  'M235 3h37l50 136L375 3h34v47l-20 9-5 12 3 1 22-10 1 55L455 3h31l75 189h-36L470 53l-56 139h-37l-1-99-38 99h-31z',
+];
+---
+
+<svg class={className} viewBox="0 0 563 197" role="img" aria-label="ViVia">
+  <defs>
+    <linearGradient id={id} gradientUnits="userSpaceOnUse" x1="0" y1="3" x2="0" y2="192">
+      <stop offset="0" stop-color="#2fb4f5"></stop>
+      <stop offset=".55" stop-color="#7b6ee7"></stop>
+      <stop offset="1" stop-color="#f56edb"></stop>
+    </linearGradient>
+  </defs>
+  {SHAPES.map((d) => <path d={d} fill={`url(#${id})`} />)}
+</svg>

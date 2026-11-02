@@ -1,0 +1,253 @@
+---
+import { NEXT_EVENT } from '../lib/site';
+import Circuit from './Circuit.astro';
+import Logo from './Logo.astro';
+---
+
+<section class="hero" id="top">
+  <Circuit mode="hero" />
+
+  <div class="container hero__grid">
+    <div class="hero__copy" data-keepout>
+      <a class="pill" href={NEXT_EVENT.href} data-until={NEXT_EVENT.ends}>
+        <span class="pill__dot"></span>
+        <span>{NEXT_EVENT.label} · {NEXT_EVENT.dates}</span>
+        <span class="pill__arrow" aria-hidden="true">→</span>
+      </a>
+      <p class="pill" hidden>This is ViVia · Digital studio, Lisbon</p>
+
+      <h1>Technology with a <span class="gradient-text">point of view.</span></h1>
+
+      <p class="hero__lead">
+        ViVia is a small digital studio in Lisbon. We bring design, engineering and curiosity
+        together to turn ambitious ideas into websites, products and hardware people can trust.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#contact">Start a project</a>
+        <a class="btn btn--ghost" href="#services">See what we do</a>
+      </div>
+    </div>
+
+    <div class="mark" data-circuit-target data-gaps="18,90,162,234,306" data-reach="0.84" data-bay="0.256">
+      <Logo variant="ring" />
+    </div>
+  </div>
+
+  <button class="telemetry" type="button" data-telemetry data-keepout aria-pressed="false" title="Toggle x-ray view">
+    <span class="sr-only">Autorouter stats. Toggle x-ray view.</span>
+    <span class="telemetry__dot"></span>
+    <span>nets <b data-t="nets">0</b></span>
+    <span>routed <b data-t="ms">0.0 ms</b></span>
+    <span>fps <b data-t="fps">--</b></span>
+  </button>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: max(100svh, 640px);
+    padding-block: calc(var(--header) + 2rem) 4.5rem;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgb(5 7 13 / 0.92) 0%, rgb(5 7 13 / 0.86) 42%, transparent 66%);
+  }
+
+  /* Blends the board into the sections below; matches .page in index.astro. */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 20%;
+    background: linear-gradient(180deg, transparent, rgb(5 7 13 / 0.82));
+    pointer-events: none;
+  }
+
+  .hero__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .hero__grid > * {
+    pointer-events: auto;
+  }
+
+  .hero__copy {
+    max-width: 42rem;
+  }
+
+  h1 {
+    margin-top: 1.5rem;
+  }
+
+  .hero__lead {
+    max-width: 34rem;
+    margin-top: 1.5rem;
+    font-size: var(--fs-lead);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.375rem 0.875rem 0.375rem 0.75rem;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    background: rgb(12 16 26 / 0.7);
+    color: var(--text-2);
+    font-size: 0.8125rem;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  a.pill:hover {
+    border-color: rgb(255 255 255 / 0.32);
+    color: var(--text);
+  }
+
+  .pill__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+  }
+
+  .pill__arrow {
+    transition: transform 0.25s var(--ease);
+  }
+
+  a.pill:hover .pill__arrow {
+    transform: translateX(3px);
+  }
+
+  .mark {
+    --charge: 0;
+    position: relative;
+    justify-self: center;
+    width: min(100%, 26.25rem);
+    aspect-ratio: 1;
+  }
+
+  .mark::before {
+    content: '';
+    position: absolute;
+    inset: -8%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(42 140 255 / 0.3), rgb(138 108 240 / 0.14) 55%, transparent);
+    opacity: calc(0.5 + var(--charge) * 0.5);
+  }
+
+  .mark :global(.ring) {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .mark :global(.ring__arc),
+  .mark :global(.ring__band) {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 1.5s var(--ease) 0.15s forwards;
+  }
+
+  .mark :global(.ring__arc) {
+    animation-delay: 0.5s;
+  }
+
+  .mark :global(.ring__v) {
+    opacity: 0;
+    animation: appear 0.9s ease 0.9s forwards;
+  }
+
+  @keyframes draw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes appear {
+    to { opacity: 1; }
+  }
+
+  .telemetry {
+    position: absolute;
+    z-index: 1;
+    right: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
+    bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-s);
+    background: rgb(5 7 13 / 0.65);
+    color: var(--text-3);
+    font: 400 0.6875rem/1.5 var(--mono);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .telemetry:hover,
+  .telemetry[aria-pressed='true'] {
+    border-color: var(--line-2);
+    color: var(--text-2);
+  }
+
+  .telemetry b {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .telemetry__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      align-items: flex-start;
+    }
+
+    .hero::before {
+      background: linear-gradient(180deg, transparent 8%, rgb(5 7 13 / 0.9) 42%);
+    }
+
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2rem;
+    }
+
+    .mark {
+      order: -1;
+      justify-self: start;
+      width: clamp(150px, 40vw, 230px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .telemetry {
+      left: var(--gutter);
+      right: auto;
+      bottom: 1rem;
+    }
+  }
+</style>

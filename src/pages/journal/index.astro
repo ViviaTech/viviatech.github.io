@@ -1,0 +1,117 @@
+---
+import PostCard from '../../components/PostCard.astro';
+import Base from '../../layouts/Base.astro';
+import { CATEGORIES } from '../../lib/site';
+import { getPosts } from '../../lib/journal';
+
+const posts = await getPosts();
+const count = (category: string) => posts.filter((post) => post.data.category === category).length;
+const filters = Object.entries(CATEGORIES);
+---
+
+<Base title="Journal" description="A field journal from the people building clearer, kinder technology at ViVia.">
+  <div class="container journal">
+    <header class="journal__head">
+      <p class="kicker">Ideas in motion</p>
+      <h1>Thoughts for a <span class="gradient-text">more useful</span> future.</h1>
+      <p>A field journal from the people building clearer, kinder technology at ViVia.</p>
+    </header>
+
+    <div class="filters" role="group" aria-label="Filter stories" data-filters>
+      <button type="button" data-filter="all" aria-pressed="true">All <span>{posts.length}</span></button>
+      {
+        filters.map(([key, label]) => (
+          <button type="button" data-filter={key} aria-pressed="false">
+            {label} <span>{count(key)}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <h2 class="sr-only">Stories</h2>
+    <div class="grid">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </div>
+
+  <script src="../../scripts/journal-filter.ts"></script>
+</Base>
+
+<style>
+  .journal {
+    padding-block: calc(var(--header) + clamp(3rem, 7vw, 6rem)) var(--section);
+  }
+
+  .journal__head {
+    max-width: 50rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .journal__head > p:last-child {
+    max-width: 34rem;
+    margin-top: 1.5rem;
+    font-size: var(--fs-lead);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Filtering needs JS. Without it, every story is simply listed. */
+  @media (scripting: none) {
+    .filters {
+      display: none;
+    }
+  }
+
+  .filters button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 40px;
+    padding: 0 0.875rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.02);
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+  }
+
+  .filters button:hover {
+    border-color: var(--line-2);
+    color: var(--text);
+  }
+
+  .filters button[aria-pressed='true'] {
+    border-color: var(--line-2);
+    background: rgb(255 255 255 / 0.08);
+    color: var(--text);
+  }
+
+  .filters span {
+    color: var(--text-3);
+    font: 400 var(--fs-label)/1 var(--mono);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  @media (max-width: 960px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

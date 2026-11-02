@@ -1,0 +1,44 @@
+:root {
+  color-scheme: dark;
+
+  /* Brand gradient, sampled from the logo. The only accent on the site. */
+  --cyan: #00f5eb;
+  --azure: #2a8cff;
+  --violet: #8a6cf0;
+  --pink: #f56edb;
+  --gradient: linear-gradient(100deg, var(--cyan), var(--azure) 36%, var(--violet) 66%, var(--pink));
+
+  /* Surfaces */
+  --bg: #05070d;
+  --surface: #0c101a;
+  --surface-2: #121826;
+  --line: rgb(255 255 255 / 0.08);
+  --line-2: rgb(255 255 255 / 0.16);
+
+  /* Text (all AA on --bg and --surface-2) */
+  --text: #f0f3f9;
+  --text-2: #b4bdcd;
+  --text-3: #8e99ae;
+
+  /* Type */
+  --sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --fs-label: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-lead: clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem);
+  --fs-h3: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
+  --fs-h2: clamp(2.125rem, 1.4rem + 3vw, 3.5rem);
+  --fs-h1: clamp(2.75rem, 1.5rem + 4.6vw, 5rem);
+
+  /* Layout */
+  --container: 77.5rem;
+  --gutter: clamp(1.25rem, 4.5vw, 3rem);
+  --section: clamp(5rem, 3.5rem + 7vw, 9rem);
+  --header: 4.25rem;
+  --radius-s: 8px;
+  --radius-m: 14px;
+  --radius-l: 20px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}

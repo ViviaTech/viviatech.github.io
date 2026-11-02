@@ -1,0 +1,100 @@
+---
+import { NAV, SITE } from '../lib/site';
+import Wordmark from './Wordmark.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__main">
+      <div class="footer__brand">
+        <a href="/" aria-label={`${SITE.name}, home`}><Wordmark class="footer__wordmark" /></a>
+        <p>{SITE.tagline}</p>
+      </div>
+
+      <nav aria-label="Footer">
+        <p class="kicker">Explore</p>
+        <ul>
+          {NAV.map(({ label, href }) => <li><a href={href}>{label}</a></li>)}
+        </ul>
+      </nav>
+
+      <div>
+        <p class="kicker">Get in touch</p>
+        <ul>
+          <li><a href={`mailto:${SITE.email}`}>Email</a></li>
+          <li><a href={SITE.phoneHref}>Phone</a></li>
+          <li><a href={SITE.github} rel="noopener">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© {year} {SITE.name}</span>
+      <span>{SITE.location} · Est. {SITE.founded}</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    padding-top: clamp(3.5rem, 6vw, 5rem);
+    border-top: 1px solid var(--line);
+    background: rgb(5 7 13 / 0.86);
+  }
+
+  .footer__main {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 3rem;
+    padding-bottom: clamp(3rem, 6vw, 4.5rem);
+  }
+
+  .footer__brand p {
+    max-width: 22rem;
+    margin-top: 1.25rem;
+  }
+
+  .footer :global(.footer__wordmark) {
+    width: 7.375rem;
+    height: auto;
+  }
+
+  .footer ul {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .footer li a {
+    font-size: 0.9375rem;
+    transition: color 0.2s;
+  }
+
+  .footer li a:hover {
+    color: var(--text);
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--text-3);
+    font: 400 var(--fs-label)/1.5 var(--mono);
+  }
+
+  @media (max-width: 640px) {
+    .footer__main {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

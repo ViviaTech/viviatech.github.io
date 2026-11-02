@@ -1,0 +1,70 @@
+---
+import { uid } from '../lib/uid';
+
+interface Props {
+  variant?: 'mark' | 'ring';
+  class?: string;
+}
+
+const { variant = 'mark', class: className } = Astro.props;
+const id = uid('logo');
+
+// Geometry measured from the original PNG logo.
+const V = ['4,6 57,6 99.5,94 46,94', '254,6 305,6 156.5,314 131,262'];
+const OUTER_R = 359;
+const GAP_CENTRES = [18, 90, 162, 234, 306];
+const HALF_GAP = 7.6;
+
+const polar = (deg: number, r: number) => {
+  const a = (deg * Math.PI) / 180;
+  return `${(r * Math.cos(a)).toFixed(1)} ${(r * Math.sin(a)).toFixed(1)}`;
+};
+const arcs = GAP_CENTRES.map((gap) => {
+  const from = gap + HALF_GAP;
+  const to = gap + 72 - HALF_GAP;
+  return `M${polar(from, OUTER_R)}A${OUTER_R} ${OUTER_R} 0 0 1 ${polar(to, OUTER_R)}`;
+});
+---
+
+{
+  variant === 'mark' ? (
+    <svg class={className} viewBox="0 0 310 320" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id={id} gradientUnits="userSpaceOnUse" x1="0" y1="6" x2="0" y2="314">
+          <stop offset="0" stop-color="#00e4ef" />
+          <stop offset=".3" stop-color="#2a8cff" />
+          <stop offset=".6" stop-color="#7b6ee7" />
+          <stop offset="1" stop-color="#ee72e8" />
+        </linearGradient>
+      </defs>
+      {V.map((points) => <polygon points={points} fill={`url(#${id})`} />)}
+    </svg>
+  ) : (
+    <svg class:list={['ring', className]} viewBox="-372 -372 744 744" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id={id} gradientUnits="userSpaceOnUse" x1="0" y1="-368" x2="0" y2="368">
+          <stop offset="0" stop-color="#00f5eb" />
+          <stop offset=".16" stop-color="#00daf1" />
+          <stop offset=".36" stop-color="#2a8cff" />
+          <stop offset=".52" stop-color="#6c72ec" />
+          <stop offset=".74" stop-color="#eb6fdf" />
+          <stop offset="1" stop-color="#f56edb" />
+        </linearGradient>
+        <linearGradient id={`${id}-v`} gradientUnits="userSpaceOnUse" x1="0" y1="6" x2="0" y2="314">
+          <stop offset="0" stop-color="#00e4ef" />
+          <stop offset=".3" stop-color="#2a8cff" />
+          <stop offset=".6" stop-color="#7b6ee7" />
+          <stop offset="1" stop-color="#ee72e8" />
+        </linearGradient>
+      </defs>
+      <circle class="ring__core" r="282" fill="#070a13" />
+      <g fill="none" stroke={`url(#${id})`} stroke-width="17">
+        {arcs.map((d) => <path class="ring__arc" d={d} pathLength="1" />)}
+      </g>
+      <circle class="ring__band" r="297" fill="none" stroke={`url(#${id})`} stroke-width="33" pathLength="1" />
+      <g class="ring__v" transform="translate(-156 -146)">
+        {V.map((points) => <polygon points={points} fill={`url(#${id}-v)`} />)}
+      </g>
+    </svg>
+  )
+}

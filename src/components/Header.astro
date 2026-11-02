@@ -1,0 +1,194 @@
+---
+import { NAV, SITE } from '../lib/site';
+import Logo from './Logo.astro';
+
+const onHome = Astro.url.pathname === '/';
+---
+
+<header class="header" data-header>
+  <div class="container header__row">
+    <a class="brand" href="/" aria-label={`${SITE.name}, home`}>
+      <Logo class="brand__mark" />
+      <span class="brand__name">ViVia</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      {NAV.map(({ label, href }) => <a href={href} data-spy={onHome ? '' : undefined}>{label}</a>)}
+    </nav>
+
+    <a class="btn btn--ghost header__cta" href="/#contact">Start a project</a>
+
+    <button class="menu-button" type="button" data-menu-open aria-label="Open menu">
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<dialog class="menu" data-menu aria-label="Menu">
+  <div class="menu__top">
+    <span class="kicker">Menu</span>
+    <button class="menu__close" type="button" data-menu-close aria-label="Close menu">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M5 5l14 14M19 5L5 19"></path>
+      </svg>
+    </button>
+  </div>
+  <nav aria-label="Menu">
+    {NAV.map(({ label, href }) => <a href={href}>{label}</a>)}
+  </nav>
+  <a class="btn btn--primary" href="/#contact">Start a project</a>
+</dialog>
+
+<style>
+  .header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  .header:global(.is-stuck) {
+    border-bottom-color: var(--line);
+    background: rgb(5 7 13 / 0.72);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    backdrop-filter: blur(16px) saturate(150%);
+  }
+
+  .header__row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: var(--header);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-right: auto;
+  }
+
+  .brand :global(.brand__mark) {
+    width: 1.5rem;
+    height: auto;
+  }
+
+  .brand__name {
+    color: var(--text);
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .nav {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .nav a {
+    padding: 0.5rem 0.875rem;
+    border-radius: var(--radius-s);
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+    transition: color 0.2s, background-color 0.2s;
+  }
+
+  .nav a:hover {
+    color: var(--text);
+    background: rgb(255 255 255 / 0.05);
+  }
+
+  .nav a:global(.is-active) {
+    color: var(--text);
+  }
+
+  .header__cta {
+    min-height: 38px;
+    padding-inline: 0.875rem;
+    font-size: var(--fs-sm);
+  }
+
+  .menu-button {
+    display: none;
+    place-content: center;
+    gap: 6px;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    border: 0;
+    background: none;
+  }
+
+  .menu-button span {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: var(--text);
+  }
+
+  .menu {
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0 var(--gutter) 2rem;
+    border: 0;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .menu[open] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .menu__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header);
+  }
+
+  .menu__top .kicker {
+    margin: 0;
+  }
+
+  .menu__close {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    border: 0;
+    background: none;
+  }
+
+  .menu nav {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-top: 1rem;
+  }
+
+  .menu nav a {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 1.75rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  @media (max-width: 767px) {
+    .nav,
+    .header__cta {
+      display: none;
+    }
+
+    .menu-button {
+      display: grid;
+    }
+  }
+</style>

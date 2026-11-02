@@ -1,0 +1,72 @@
+---
+import { CATEGORIES } from '../lib/site';
+import { formatDate, postUrl, type Post } from '../lib/journal';
+import Cover from './Cover.astro';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, category, date, when } = post.data;
+---
+
+<article class="post card spot" data-category={category}>
+  <a href={postUrl(post)}>
+    <div class="post__cover"><Cover slug={post.id} /></div>
+    <div class="post__body">
+      <p class="post__meta">
+        <span>{CATEGORIES[category]}</span>
+        {when ? <span>{when}</span> : <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>}
+      </p>
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .post a {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .post__cover {
+    aspect-ratio: 20 / 11;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .post__cover :global(svg) {
+    transition: transform 0.8s var(--ease);
+  }
+
+  .post:hover .post__cover :global(svg) {
+    transform: scale(1.04);
+  }
+
+  .post__body {
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  .post__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.875rem;
+    color: var(--text-3);
+    font: 400 var(--fs-label)/1.4 var(--mono);
+  }
+
+  .post h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  .post__body > p:last-child {
+    margin-top: 0.625rem;
+    font-size: 0.9375rem;
+  }
+</style>

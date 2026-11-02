@@ -1,0 +1,224 @@
+---
+import { render } from 'astro:content';
+import Cover from '../../components/Cover.astro';
+import Team from '../../components/Team.astro';
+import Base from '../../layouts/Base.astro';
+import { formatDate, getPosts, postUrl, readingTime, type Post } from '../../lib/journal';
+import { CATEGORIES } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    // getPosts is newest first, so the next story along is the older one.
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
+}
+
+interface Props {
+  post: Post;
+  newer?: Post;
+  older?: Post;
+}
+
+const { post, newer, older } = Astro.props;
+const { title, description, category, label, date, when, where, showTeam } = post.data;
+const { Content } = await render(post);
+---
+
+<Base title={title} description={description} article={{ published: date }}>
+  <div class="progress" data-progress aria-hidden="true"></div>
+
+  <article class="article">
+    <header class="container article__head">
+      <a class="back" href="/journal/"><span aria-hidden="true">←</span> Journal</a>
+      <p class="kicker">{CATEGORIES[category]} / {label}</p>
+      <h1>{title}</h1>
+      <p class="article__dek">{description}</p>
+      <p class="article__meta">
+        {when ? <span>{when}</span> : <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>}
+        <span>{where ?? readingTime(post)}</span>
+      </p>
+    </header>
+
+    <div class="container article__cover">
+      <div><Cover slug={post.id} /></div>
+    </div>
+
+    <div class="container">
+      <div class="prose">
+        <Content />
+        {
+          showTeam && (
+            <>
+              <h2>The team attending</h2>
+              <Team compact />
+            </>
+          )
+        }
+      </div>
+
+      <nav class="pager" aria-label="More stories">
+        {
+          newer ? (
+            <a href={postUrl(newer)}>
+              <span class="kicker">Newer</span>
+              <span>{newer.data.title}</span>
+            </a>
+          ) : (
+            <span></span>
+          )
+        }
+        {
+          older && (
+            <a class="pager__older" href={postUrl(older)}>
+              <span class="kicker">Older</span>
+              <span>{older.data.title}</span>
+            </a>
+          )
+        }
+      </nav>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .progress {
+    --progress: 0;
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 110;
+    height: 2px;
+    background: var(--gradient);
+    transform: scaleX(var(--progress));
+    transform-origin: left;
+  }
+
+  .article {
+    padding-top: calc(var(--header) + clamp(2rem, 5vw, 4rem));
+    padding-bottom: var(--section);
+  }
+
+  .article__head {
+    max-width: calc(52rem + var(--gutter) * 2);
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .back {
+    display: inline-block;
+    margin-bottom: 2rem;
+    color: var(--text-3);
+    font-size: var(--fs-sm);
+    transition: color 0.2s;
+  }
+
+  .back:hover {
+    color: var(--text);
+  }
+
+  h1 {
+    font-size: clamp(2.375rem, 1.4rem + 3.8vw, 4rem);
+  }
+
+  .article__dek {
+    margin-top: 1.25rem;
+    font-size: var(--fs-lead);
+  }
+
+  .article__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    margin-top: 1.5rem;
+    color: var(--text-3);
+    font: 400 var(--fs-label)/1.5 var(--mono);
+  }
+
+  .article__cover {
+    max-width: calc(68rem + var(--gutter) * 2);
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .article__cover > div {
+    aspect-ratio: 20 / 9;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-l);
+  }
+
+  .prose {
+    max-width: 42rem;
+    margin-inline: auto;
+    color: #cfd5e1;
+    font-size: 1.125rem;
+    line-height: 1.75;
+  }
+
+  .prose :global(p + p) {
+    margin-top: 1.25rem;
+  }
+
+  .prose :global(h2) {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    font-size: 1.75rem;
+  }
+
+  .prose :global(blockquote) {
+    margin-block: 2.5rem;
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--azure);
+    color: var(--text);
+    font-size: 1.375rem;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+  }
+
+  .prose :global(a) {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: var(--azure);
+    text-underline-offset: 3px;
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    max-width: 42rem;
+    margin: clamp(3rem, 6vw, 4.5rem) auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .pager a {
+    display: grid;
+    gap: 0.25rem;
+    color: var(--text);
+    font-weight: 500;
+    line-height: 1.35;
+    transition: color 0.2s;
+  }
+
+  .pager a:hover {
+    color: var(--cyan);
+  }
+
+  .pager .kicker {
+    margin: 0;
+  }
+
+  .pager__older {
+    text-align: right;
+  }
+
+  @media (max-width: 560px) {
+    .pager {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pager__older {
+      text-align: left;
+    }
+  }
+</style>

@@ -1,0 +1,66 @@
+---
+import Circuit from '../components/Circuit.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found" description="This page doesn't exist." noindex fullBackdrop>
+  <section class="lost">
+    <Circuit mode="broken" />
+    <div class="container lost__inner">
+      <div data-keepout>
+        <p class="kicker">Error 404</p>
+        <h1>This trace doesn't <span class="gradient-text">connect.</span></h1>
+        <p>The page you're after isn't here. It may have moved, or the link may be wrong.</p>
+        <div class="lost__actions">
+          <a class="btn btn--primary" href="/">Back to ViVia</a>
+          <a class="btn btn--ghost" href="/journal/">Read the journal</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lost {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 100svh;
+    padding-block: calc(var(--header) + 2rem) 4rem;
+    overflow: hidden;
+  }
+
+  .lost::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgb(5 7 13 / 0.92) 0%, rgb(5 7 13 / 0.84) 50%, rgb(5 7 13 / 0.2) 78%);
+  }
+
+  .lost__inner {
+    position: relative;
+    pointer-events: none;
+  }
+
+  .lost__inner > div {
+    width: fit-content;
+    max-width: 38rem;
+    pointer-events: auto;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 1.5rem + 4.4vw, 4.75rem);
+  }
+
+  p:not(.kicker) {
+    margin-top: 1.25rem;
+    font-size: var(--fs-lead);
+  }
+
+  .lost__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+</style>

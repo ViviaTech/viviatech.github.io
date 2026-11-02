@@ -1,0 +1,162 @@
+---
+import { Picture } from 'astro:assets';
+import miguel from '../assets/team/miguel.jpg';
+import rodrigo from '../assets/team/rodrigo.jpg';
+import samir from '../assets/team/samir.jpg';
+
+interface Props {
+  /** Compact grid for inside articles. */
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+
+const team = [
+  {
+    name: 'Rodrigo Lima',
+    role: 'CEO · Founder',
+    photo: rodrigo,
+    bio: "Leads the studio's technical direction, bringing immersive world-building and dependable systems together.",
+  },
+  {
+    name: 'Miguel Paulino',
+    role: 'Co-Founder · Lead Engineer',
+    photo: miguel,
+    bio: 'A hands-on problem solver who balances clean engineering with creative thinking and practical outcomes.',
+  },
+  {
+    name: 'Samir Mercado',
+    role: 'Co-Founder · Lead Engineer',
+    photo: samir,
+    bio: 'Software engineer and VFX editor focused on performance, polish, and fast iteration.',
+  },
+];
+
+---
+
+<ul class:list={['team', { 'team--compact': compact }]}>
+  {
+    team.map(({ name, role, photo, bio }) => (
+      <li class="member card spot" data-reveal={compact ? undefined : ''}>
+        <div class="member__photo">
+          <Picture
+            src={photo}
+            alt={`Portrait of ${name}`}
+            formats={['avif', 'webp']}
+            widths={compact ? [240, 360] : [320, 480, 640]}
+            sizes={compact ? '(max-width: 640px) 100vw, 240px' : '(max-width: 860px) 100vw, 400px'}
+            loading="lazy"
+          />
+        </div>
+        <div class="member__body">
+          <h3>{name}</h3>
+          <p class="member__role">{role}</p>
+          {!compact && <p class="member__bio">{bio}</p>}
+        </div>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .team {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .member {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .member__photo {
+    position: relative;
+    aspect-ratio: 1 / 1.08;
+    overflow: hidden;
+    background: var(--surface-2);
+  }
+
+  .member__photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 18%;
+    /* One grade across three very different photos, so they read as a set. */
+    filter: grayscale(1) contrast(1.06) brightness(0.92);
+    transition: filter 0.5s ease, transform 0.8s var(--ease);
+  }
+
+  .member__photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(42 140 255 / 0.16), rgb(138 108 240 / 0.1) 50%, rgb(5 7 13 / 0.72));
+    mix-blend-mode: multiply;
+    transition: opacity 0.5s;
+  }
+
+  .member:hover .member__photo :global(img) {
+    filter: none;
+    transform: scale(1.025);
+  }
+
+  .member:hover .member__photo::after {
+    opacity: 0.3;
+  }
+
+  .member__body {
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  .member__role {
+    margin-top: 0.25rem;
+    color: var(--text-3);
+    font: 400 var(--fs-label)/1.5 var(--mono);
+  }
+
+  .member__bio {
+    margin-top: 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  .team--compact .member__body {
+    padding: 0.875rem 1rem 1rem;
+  }
+
+  .team--compact h3 {
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 860px) {
+    .team:not(.team--compact) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .team:not(.team--compact) .member {
+      flex-direction: row;
+    }
+
+    .team:not(.team--compact) .member__photo {
+      flex: 0 0 38%;
+      aspect-ratio: auto;
+      min-height: 200px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .team--compact {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .team--compact .member {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .team--compact .member__photo {
+      flex: 0 0 96px;
+    }
+  }
+</style>

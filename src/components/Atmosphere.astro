@@ -1,0 +1,86 @@
+---
+// The glowing curve behind the site, drawn in code so it stays sharp on any screen.
+
+interface Props {
+  /** Reading pages keep it faint so it never runs through text. */
+  dim?: boolean;
+}
+
+const { dim = false } = Astro.props;
+---
+
+<div class:list={['atmosphere', { 'atmosphere--dim': dim }]} aria-hidden="true">
+  <svg viewBox="0 0 2000 1125" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <defs>
+      <linearGradient id="atm-upper" gradientUnits="userSpaceOnUse" x1="0" y1="60" x2="0" y2="612">
+        <stop offset="0" stop-color="#1b2030" stop-opacity="0"></stop>
+        <stop offset=".6" stop-color="#232a4a" stop-opacity=".45"></stop>
+        <stop offset="1" stop-color="#3c4fa8" stop-opacity=".62"></stop>
+      </linearGradient>
+      <linearGradient id="atm-lower" gradientUnits="userSpaceOnUse" x1="0" y1="612" x2="0" y2="1125">
+        <stop offset="0" stop-color="#2f3a9e" stop-opacity=".62"></stop>
+        <stop offset=".5" stop-color="#17205a" stop-opacity=".32"></stop>
+        <stop offset="1" stop-color="#0b1030" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="atm-edge" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="2000" y2="0">
+        <stop offset="0" stop-color="#5a5ae0"></stop>
+        <stop offset=".42" stop-color="#7f8cf5"></stop>
+        <stop offset=".62" stop-color="#7fb4ff"></stop>
+        <stop offset="1" stop-color="#46b4ff"></stop>
+      </linearGradient>
+      <linearGradient id="atm-rise" gradientUnits="userSpaceOnUse" x1="0" y1="50" x2="0" y2="612">
+        <stop offset="0" stop-color="#8a6cf0" stop-opacity=".1"></stop>
+        <stop offset=".5" stop-color="#7a78ee" stop-opacity=".55"></stop>
+        <stop offset="1" stop-color="#9fb8ff"></stop>
+      </linearGradient>
+      <linearGradient id="atm-orb" gradientUnits="userSpaceOnUse" x1="0" y1="-120" x2="0" y2="52">
+        <stop offset="0" stop-color="#6c5fb0" stop-opacity="0"></stop>
+        <stop offset="1" stop-color="#b39df5" stop-opacity=".24"></stop>
+      </linearGradient>
+      <filter id="atm-blur" x="-10%" y="-40%" width="120%" height="180%">
+        <feGaussianBlur stdDeviation="10"></feGaussianBlur>
+      </filter>
+    </defs>
+
+    <circle cx="1182" cy="-170" r="222" fill="url(#atm-orb)"></circle>
+    <path d="M2000 57H845a277.5 277.5 0 0 0 0 555H2000z" fill="url(#atm-upper)"></path>
+    <path d="M0 525c60 56 100 87 170 87H1010a335 335 0 0 1 0 670H0z" fill="url(#atm-lower)"></path>
+
+    <g fill="none" stroke-linecap="round">
+      <path d="M1160 57H845a277.5 277.5 0 0 0-22 554" stroke="url(#atm-rise)" stroke-width="2"></path>
+      <path d="M1160 57H845a277.5 277.5 0 0 0-22 554" stroke="url(#atm-rise)" stroke-width="10" opacity=".35" filter="url(#atm-blur)"></path>
+      <path d="M0 525c60 56 100 87 170 87H2000" stroke="url(#atm-edge)" stroke-width="2.5"></path>
+      <path d="M0 525c60 56 100 87 170 87H2000" stroke="url(#atm-edge)" stroke-width="14" opacity=".5" filter="url(#atm-blur)"></path>
+      <path d="M1010 612a335 335 0 0 1 335 335" stroke="#6f7cf0" stroke-width="2" opacity=".65"></path>
+      <path d="M1010 612a335 335 0 0 1 335 335" stroke="#6f7cf0" stroke-width="10" opacity=".28" filter="url(#atm-blur)"></path>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    transform: translateZ(0);
+  }
+
+  .atmosphere svg {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+  }
+
+  .atmosphere--dim svg {
+    opacity: 0.26;
+  }
+
+  /* Fades the backdrop down the page so it stays atmosphere, not decoration. */
+  .atmosphere::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 90% at 50% 30%, transparent 30%, rgb(5 7 13 / 0.72) 100%);
+  }
+</style>

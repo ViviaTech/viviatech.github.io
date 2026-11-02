@@ -1,0 +1,26 @@
+---
+interface Props {
+  mode: 'hero' | 'calm' | 'mini' | 'broken';
+}
+
+const { mode } = Astro.props;
+---
+
+<canvas class="circuit" data-circuit={mode} aria-hidden="true"></canvas>
+
+<script src="../scripts/circuit/index.ts"></script>
+
+<style>
+  /*
+    Don't use mask-image to fade this canvas. It repaints every frame, so a mask
+    makes the browser re-composite it each time: at 2560x1440 that alone took
+    frames from 16.6 ms to 31.4 ms. Fade edges with a static gradient on top.
+  */
+  .circuit {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+  }
+</style>

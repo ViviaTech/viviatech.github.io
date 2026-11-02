@@ -1,0 +1,142 @@
+---
+import { SITE } from '../lib/site';
+import Circuit from './Circuit.astro';
+---
+
+<section class="contact" id="contact">
+  <Circuit mode="calm" />
+
+  <div class="container contact__inner">
+    <div class="contact__head" data-keepout>
+      <p class="kicker">Start a conversation</p>
+      <h2>Let's make something <span class="gradient-text">worth using.</span></h2>
+      <p>Have a project, a rough idea, or a problem worth untangling? Bring it to us.</p>
+    </div>
+
+    <div class="contact__options" data-keepout>
+      <div class="option card">
+        <span class="kicker">Send an email</span>
+        <div class="option__row">
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          <button class="copy" type="button" data-copy={SITE.email} aria-label="Copy email address">Copy</button>
+        </div>
+      </div>
+      <div class="option card">
+        <span class="kicker">Give us a call</span>
+        <div class="option__row">
+          <a href={SITE.phoneHref}>{SITE.phone}</a>
+          <button class="copy" type="button" data-copy={SITE.phone} aria-label="Copy phone number">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    padding-block: var(--section);
+    overflow: hidden;
+  }
+
+  .contact::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgb(5 7 13 / 0.92) 0%, rgb(5 7 13 / 0.84) 50%, rgb(5 7 13 / 0.3) 80%);
+  }
+
+  /* Blends the board into the sections around it. */
+  .contact::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(5 7 13 / 0.82), transparent 14%, transparent 86%, rgb(5 7 13 / 0.86));
+    pointer-events: none;
+  }
+
+  .contact__inner {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .contact__inner > * {
+    pointer-events: auto;
+  }
+
+  .contact__head {
+    max-width: 52rem;
+    margin-bottom: 2.5rem;
+  }
+
+  h2 {
+    font-size: clamp(2.5rem, 1.5rem + 3.8vw, 4.25rem);
+    letter-spacing: -0.03em;
+  }
+
+  .contact__head p:last-child {
+    margin-top: 1.25rem;
+    font-size: var(--fs-lead);
+  }
+
+  .contact__options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    max-width: 56rem;
+  }
+
+  .option {
+    display: block;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .option .kicker {
+    display: block;
+    margin-bottom: 0.625rem;
+  }
+
+  .option__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+  }
+
+  .option__row a {
+    color: var(--text);
+    font-size: clamp(1rem, 0.9rem + 0.45vw, 1.1875rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+    transition: color 0.2s;
+  }
+
+  .option__row a:hover {
+    color: var(--cyan);
+  }
+
+  .copy {
+    min-height: 32px;
+    padding: 0 0.625rem;
+    border: 1px solid var(--line-2);
+    border-radius: 6px;
+    background: rgb(255 255 255 / 0.03);
+    color: var(--text-2);
+    font: 400 var(--fs-label)/1 var(--mono);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .copy:hover {
+    border-color: rgb(255 255 255 / 0.32);
+    color: var(--text);
+  }
+
+  @media (max-width: 760px) {
+    .contact__options {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

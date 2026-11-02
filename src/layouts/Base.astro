@@ -1,0 +1,49 @@
+---
+import '@fontsource-variable/geist/wght.css';
+import '@fontsource-variable/geist-mono/wght.css';
+import geist from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import Atmosphere from '../components/Atmosphere.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Seo from '../components/Seo.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  article?: { published: Date };
+  noindex?: boolean;
+  /** Full-strength backdrop, for pages that manage it behind their own text. */
+  fullBackdrop?: boolean;
+}
+
+const { fullBackdrop = false, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#05070d" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preload" href={geist} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title="ViVia Journal" href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <Seo {...seo} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Atmosphere dim={!fullBackdrop} />
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <script src="../scripts/main.ts"></script>
+  </body>
+</html>

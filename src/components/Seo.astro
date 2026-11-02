@@ -1,0 +1,63 @@
+---
+import { SITE } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: { published: Date };
+  noindex?: boolean;
+}
+
+const { title, description = SITE.description, image = '/og.png', article, noindex = false } = Astro.props;
+const fullTitle = title ? `${title} | ${SITE.short}` : `${SITE.name} | Digital studio in Lisbon`;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const imageUrl = new URL(image, SITE.url).href;
+
+const organization = {
+  '@type': 'Organization',
+  name: SITE.name,
+  url: SITE.url,
+  logo: new URL('/apple-touch-icon.png', SITE.url).href,
+  email: SITE.email,
+  telephone: SITE.phone.replaceAll(' ', ''),
+  foundingDate: String(SITE.founded),
+  address: { '@type': 'PostalAddress', addressLocality: 'Lisbon', addressCountry: 'PT' },
+  sameAs: [SITE.github],
+};
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  ...(article
+    ? {
+        '@type': 'Article',
+        headline: title,
+        description,
+        datePublished: article.published.toISOString(),
+        url: canonical,
+        image: imageUrl,
+        author: organization,
+        publisher: organization,
+      }
+    : organization),
+};
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex" />}
+
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:title" content={title ?? SITE.name} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="en_GB" />
+<meta name="twitter:card" content="summary_large_image" />
+{article && <meta property="article:published_time" content={article.published.toISOString()} />}
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />

@@ -1,0 +1,84 @@
+---
+import About from '../components/About.astro';
+import Contact from '../components/Contact.astro';
+import Hero from '../components/Hero.astro';
+import PostCard from '../components/PostCard.astro';
+import Services from '../components/Services.astro';
+import Team from '../components/Team.astro';
+import Base from '../layouts/Base.astro';
+import { getHomepagePosts } from '../lib/journal';
+
+const posts = await getHomepagePosts();
+---
+
+<Base fullBackdrop>
+  <Hero />
+  <div class="page">
+    <About />
+    <Services />
+
+    <section class="section" id="team">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="kicker">The people behind ViVia</p>
+          <h2>Small team. Serious care.</h2>
+          <p>Different disciplines, one shared standard: make every detail earn its place.</p>
+        </div>
+        <Team />
+      </div>
+    </section>
+
+    <section class="section" id="journal">
+      <div class="container">
+        <div class="journal-head" data-reveal>
+          <div class="section-head">
+            <p class="kicker">Notes from the workbench</p>
+            <h2>Journal</h2>
+            <p>Short thoughts on building better digital products, safer systems, and technology that earns its place.</p>
+          </div>
+          <a class="btn btn--ghost" href="/journal/">All stories <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="posts">
+          {posts.map((post) => <div data-reveal><PostCard post={post} /></div>)}
+        </div>
+      </div>
+    </section>
+  </div>
+  <Contact />
+</Base>
+
+<style>
+  /* Dims the backdrop behind the content sections; hero and contact stay open. */
+  .page {
+    background: rgb(5 7 13 / 0.82);
+  }
+
+  .journal-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .journal-head .section-head {
+    margin-bottom: 0;
+  }
+
+  .posts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .posts > div {
+    display: grid;
+  }
+
+  @media (max-width: 960px) {
+    .posts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

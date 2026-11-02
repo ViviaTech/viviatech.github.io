@@ -1,0 +1,195 @@
+---
+import Circuit from './Circuit.astro';
+import Logo from './Logo.astro';
+---
+
+<section class="section" id="services">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="kicker">What we make possible</p>
+      <h2>Good technology should feel obvious.</h2>
+      <p>We bring sharp thinking to the messy middle between an idea and something people can actually use.</p>
+    </div>
+
+    <div class="services">
+      <article class="service card spot" data-reveal>
+        <div class="service__visual terminal" aria-hidden="true">
+          <div class="terminal__bar"><i></i><i></i><i></i></div>
+          <pre class="terminal__body"><code><span class="line"><b>$</b> vivia audit your-site.com</span>
+<span class="line"><u>✓</u> headers, tls, dependencies</span>
+<span class="line"><u>✓</u> design and content review</span>
+<span class="line"><s>!</s> structure: rework advised</span>
+<span class="line"><b>→</b> trust the system</span></code></pre>
+        </div>
+
+        <div class="service__body">
+          <p class="kicker">01 / Advisory</p>
+          <h3>Tech Consultancy</h3>
+          <p>Make your digital foundations safer, clearer, and easier to build on.</p>
+          <ul>
+            <li>Verify the safety of websites</li>
+            <li>Website management and design</li>
+            <li>Tech structure rework</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="service card spot" data-reveal>
+        <div class="service__visual chipzone" aria-hidden="true">
+          <Circuit mode="mini" />
+          <div class="chip" data-circuit-target data-gaps="0,45,90,135,180,225,270,315" data-reach="1" data-bay="0.9">
+            <Logo />
+          </div>
+        </div>
+
+        <div class="service__body">
+          <p class="kicker">02 / Hardware</p>
+          <h3>Making Tech Affordable</h3>
+          <p>Build useful, exciting hardware without making access feel exclusive.</p>
+          <ul>
+            <li>Human-first product thinking</li>
+            <li>Practical prototyping</li>
+            <li>More technology for more people</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .services {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .service {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .service__visual {
+    position: relative;
+    height: 15rem;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background: rgb(5 7 13 / 0.6);
+  }
+
+  .service__body {
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .service__body .kicker {
+    margin-bottom: 0.75rem;
+  }
+
+  .service__body > p:not(.kicker) {
+    margin-top: 0.75rem;
+  }
+
+  .service__body h3 {
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  }
+
+  .service__body ul {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .service__body li {
+    position: relative;
+    padding-left: 1.125rem;
+    color: var(--text);
+    font-size: 0.9375rem;
+  }
+
+  .service__body li::before {
+    content: '';
+    position: absolute;
+    top: 0.65em;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gradient);
+  }
+
+  .terminal {
+    padding: 0 1.5rem;
+  }
+
+  .terminal__bar {
+    display: flex;
+    gap: 6px;
+    padding-block: 1rem 0.875rem;
+  }
+
+  .terminal__bar i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.12);
+  }
+
+  .terminal__body {
+    margin: 0;
+    color: var(--text-2);
+    font: 400 0.875rem/1.85 var(--mono);
+    white-space: pre-wrap;
+  }
+
+  .terminal__body b { color: var(--text); font-weight: 500; }
+  .terminal__body u { color: var(--cyan); text-decoration: none; }
+  .terminal__body s { color: var(--pink); text-decoration: none; }
+
+  /* The lines print as the card scrolls into view. No JS needed. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .line {
+        animation: print linear both;
+        animation-timeline: view();
+      }
+
+      .line:nth-child(1) { animation-range: entry 20% entry 45%; }
+      .line:nth-child(2) { animation-range: entry 35% entry 60%; }
+      .line:nth-child(3) { animation-range: entry 50% entry 75%; }
+      .line:nth-child(4) { animation-range: entry 65% entry 90%; }
+      .line:nth-child(5) { animation-range: entry 80% entry 105%; }
+    }
+  }
+
+  @keyframes print {
+    from { opacity: 0; }
+  }
+
+  .chip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 5.25rem;
+    height: 5.25rem;
+    border: 1px solid var(--line-2);
+    border-radius: 16px;
+    background: linear-gradient(160deg, #161d2e, #0b0f18);
+    box-shadow: 0 0 44px rgb(42 140 255 / 0.25);
+    translate: -50% -50%;
+  }
+
+  .chip :global(svg) {
+    width: 2.25rem;
+    height: auto;
+  }
+
+  @media (max-width: 860px) {
+    .services {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
