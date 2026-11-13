@@ -6,7 +6,7 @@ export const SITE = {
   description:
     'ViVia is a small digital studio in Lisbon. We bring design, engineering and curiosity together to turn ambitious ideas into websites, products and hardware people can trust.',
   tagline: 'Clearer, more useful technology for people with ambitious ideas.',
-  email: 'viviatechnologies@gmail.com',
+  email: 'general@viviatechnologies.com',
   phone: '+351 928 214 629',
   phoneHref: 'tel:+351928214629',
   github: 'https://github.com/ViviaTech',

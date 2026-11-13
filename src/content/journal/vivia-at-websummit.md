@@ -19,7 +19,7 @@ We are excited to share that ViVia Technologies will be attending Web Summit Lis
 
 Web Summit 2026 takes place from 9 to 12 November at MEO Arena and the surrounding venues in Parque das Nações. If you are attending and want to talk about digital products, safer systems, or an idea that deserves a clearer path forward, come and say hello.
 
-We will be there to listen, exchange ideas, and meet people who care about turning technology into something people can actually use and trust. To set up a meeting, email us at [viviatechnologies@gmail.com](mailto:viviatechnologies@gmail.com).
+We will be there to listen, exchange ideas, and meet people who care about turning technology into something people can actually use and trust. To set up a meeting, email us at [general@viviatechnologies.com](mailto:general@viviatechnologies.com).
 
 > Technology becomes more useful when more people can take part in shaping what comes next.
 
